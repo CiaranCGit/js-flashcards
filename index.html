@@ -2,206 +2,299 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f0f23">
 <title>JS Interview Flashcards</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     background: #0f0f23;
     color: #e0e0e0;
     min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    touch-action: pan-y;
+  }
+  body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
   }
 
-  .header {
-    text-align: center;
-    padding: 24px 16px 8px;
-    width: 100%;
-    max-width: 700px;
-  }
+  /* === HEADER === */
+  .header { text-align: center; padding: 16px 16px 4px; width: 100%; }
   .header h1 {
-    font-size: 24px;
+    font-size: 20px;
     background: linear-gradient(to right, #4ecdc4, #a855f7);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 4px;
+    background-clip: text;
   }
-  .header .subtitle { font-size: 13px; color: #888; }
 
+  /* === STREAK === */
+  .streak-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: #888;
+  }
+  .streak-fire { font-size: 18px; }
+  .streak-num { color: #f59e0b; font-weight: 700; }
+  .streak-label { color: #666; font-size: 11px; }
+
+  /* === STATS === */
   .stats {
     display: flex;
-    gap: 16px;
+    gap: 0;
     justify-content: center;
-    padding: 12px;
-    font-size: 13px;
+    padding: 4px 16px 8px;
+    width: 100%;
+    max-width: 400px;
   }
-  .stat { text-align: center; }
-  .stat .num { font-size: 20px; font-weight: 700; }
-  .stat .label { color: #888; font-size: 11px; }
+  .stat {
+    text-align: center;
+    flex: 1;
+    padding: 6px 0;
+  }
+  .stat .num { font-size: 22px; font-weight: 800; }
+  .stat .label { color: #666; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
   .stat.know .num { color: #4ecdc4; }
   .stat.learning .num { color: #f59e0b; }
-  .stat.remaining .num { color: #888; }
+  .stat.remaining .num { color: #666; }
 
+  /* === PROGRESS === */
+  .progress-bar { width: calc(100% - 32px); max-width: 400px; height: 6px; background: #1a1a2e; border-radius: 3px; }
+  .progress-fill { height: 100%; background: linear-gradient(to right, #4ecdc4, #a855f7); border-radius: 3px; transition: width 0.4s ease; }
+
+  /* === FILTERS === */
   .filters {
     display: flex;
     gap: 6px;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 8px 16px;
-    max-width: 700px;
+    overflow-x: auto;
+    padding: 10px 16px;
+    width: 100%;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
   }
+  .filters::-webkit-scrollbar { display: none; }
   .filter-btn {
-    padding: 4px 12px;
+    padding: 6px 14px;
     border-radius: 20px;
-    border: 1px solid #333;
+    border: 1px solid #2a2a3e;
     background: transparent;
-    color: #aaa;
+    color: #888;
     font-size: 12px;
     cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
     transition: all 0.2s;
   }
-  .filter-btn:hover { border-color: #4ecdc4; color: #4ecdc4; }
-  .filter-btn.active { background: #4ecdc4; color: #0f0f23; border-color: #4ecdc4; font-weight: 600; }
+  .filter-btn.active { background: #4ecdc4; color: #0f0f23; border-color: #4ecdc4; font-weight: 700; }
 
-  .card-container {
-    perspective: 1000px;
+  /* === CARD === */
+  .card-wrapper {
     width: 100%;
-    max-width: 600px;
-    height: 320px;
-    margin: 16px;
+    max-width: 440px;
+    padding: 8px 16px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+  .card-container {
+    perspective: 1200px;
+    width: 100%;
+    height: 280px;
     cursor: pointer;
+    position: relative;
   }
   .card {
     position: relative;
     width: 100%;
     height: 100%;
-    transition: transform 0.5s;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     transform-style: preserve-3d;
   }
   .card.flipped { transform: rotateY(180deg); }
+
+  /* Swipe feedback */
+  .card.swipe-left { transform: translateX(-100px) rotate(-5deg); opacity: 0; transition: all 0.3s ease; }
+  .card.swipe-right { transform: translateX(100px) rotate(5deg); opacity: 0; transition: all 0.3s ease; }
+
   .card-face {
     position: absolute;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
-    border-radius: 16px;
+    -webkit-backface-visibility: hidden;
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 32px;
+    padding: 24px 20px;
     text-align: center;
+    overflow-y: auto;
   }
   .card-front {
-    background: linear-gradient(135deg, #1a1a3e, #1e1e4a);
-    border: 1px solid #333;
+    background: linear-gradient(145deg, #1a1a3e, #1e1e4a);
+    border: 1px solid #2a2a4a;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
   }
   .card-back {
-    background: linear-gradient(135deg, #1a2e1a, #1e3a1e);
+    background: linear-gradient(145deg, #1a2e1a, #1e3a1e);
     border: 1px solid #2d5a2d;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     transform: rotateY(180deg);
   }
   .card-topic {
     position: absolute;
-    top: 16px;
-    left: 20px;
-    font-size: 11px;
+    top: 14px;
+    left: 18px;
+    font-size: 10px;
     color: #4ecdc4;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+  .card-number {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    font-size: 10px;
+    color: #555;
+  }
+  .card-difficulty {
+    position: absolute;
+    bottom: 14px;
+    left: 18px;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
     font-weight: 600;
   }
-  .card-label {
-    position: absolute;
-    top: 16px;
-    right: 20px;
-    font-size: 11px;
-    color: #888;
-  }
+  .diff-new { background: #333; color: #888; }
+  .diff-learning { background: #3d2e00; color: #f59e0b; }
+  .diff-known { background: #0d2e2a; color: #4ecdc4; }
+
   .card-text {
-    font-size: 18px;
-    line-height: 1.6;
+    font-size: 17px;
+    line-height: 1.55;
     max-width: 100%;
+    word-wrap: break-word;
   }
-  .card-front .card-text { color: #fff; }
-  .card-back .card-text { color: #b0e0b0; font-size: 16px; }
+  .card-front .card-text { color: #fff; font-weight: 500; }
+  .card-back .card-text { color: #c0e8c0; font-size: 15px; }
   .card-hint {
     position: absolute;
-    bottom: 16px;
-    font-size: 12px;
-    color: #555;
+    bottom: 14px;
+    right: 18px;
+    font-size: 10px;
+    color: #444;
   }
 
+  /* === FEEDBACK TOAST === */
+  .toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    padding: 16px 32px;
+    border-radius: 16px;
+    font-size: 24px;
+    font-weight: 800;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .toast.toast-again { background: rgba(220,38,38,0.9); color: white; }
+  .toast.toast-hard { background: rgba(245,158,11,0.9); color: #1a1a2e; }
+  .toast.toast-good { background: rgba(78,205,196,0.9); color: #1a1a2e; }
+
+  /* === ACTIONS === */
   .actions {
     display: flex;
-    gap: 12px;
-    padding: 8px 16px 24px;
+    gap: 10px;
+    padding: 8px 16px 12px;
+    width: 100%;
+    max-width: 440px;
+    justify-content: center;
   }
   .action-btn {
-    padding: 12px 32px;
-    border-radius: 12px;
+    flex: 1;
+    padding: 14px 8px;
+    border-radius: 14px;
     border: none;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s;
+    max-width: 130px;
   }
-  .action-btn:hover { transform: translateY(-2px); }
-  .btn-again {
-    background: #dc2626;
-    color: white;
+  .action-btn:active { transform: scale(0.95); }
+  .btn-again { background: #dc2626; color: white; }
+  .btn-hard { background: #f59e0b; color: #1a1a2e; }
+  .btn-good { background: #4ecdc4; color: #1a1a2e; }
+
+  /* === SESSION SUMMARY === */
+  .summary {
+    text-align: center;
+    padding: 40px 24px;
+    max-width: 400px;
   }
-  .btn-hard {
-    background: #f59e0b;
-    color: #0f0f23;
+  .summary h2 {
+    font-size: 28px;
+    margin-bottom: 4px;
+    background: linear-gradient(to right, #4ecdc4, #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-  .btn-good {
+  .summary .score-big { font-size: 56px; font-weight: 800; color: #4ecdc4; margin: 16px 0; }
+  .summary .score-label { color: #888; font-size: 13px; }
+  .summary-stats { display: flex; gap: 24px; justify-content: center; margin: 20px 0; }
+  .summary-stat { text-align: center; }
+  .summary-stat .num { font-size: 24px; font-weight: 700; }
+  .summary-stat .label { font-size: 11px; color: #666; }
+  .summary-msg { color: #888; font-size: 14px; margin: 16px 0; line-height: 1.5; }
+  .restart-btn {
+    margin-top: 12px;
+    padding: 14px 40px;
+    border-radius: 14px;
+    border: none;
     background: #4ecdc4;
     color: #0f0f23;
-  }
-  .btn-skip {
-    background: #333;
-    color: #aaa;
-  }
-
-  .progress-bar {
-    width: 100%;
-    max-width: 600px;
-    height: 4px;
-    background: #222;
-    border-radius: 2px;
-    margin: 0 16px;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(to right, #4ecdc4, #a855f7);
-    border-radius: 2px;
-    transition: width 0.3s;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
   }
 
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: #888;
-  }
-  .empty-state h2 { color: #4ecdc4; margin-bottom: 8px; }
+  /* === KEYBOARD HINTS (desktop only) === */
+  .kbd-hints { font-size: 10px; color: #444; text-align: center; padding: 4px 0 12px; }
+  @media (pointer: coarse) { .kbd-hints { display: none; } }
+  kbd { background: #1a1a2e; border: 1px solid #333; border-radius: 4px; padding: 2px 6px; font-family: monospace; font-size: 10px; }
 
-  .keyboard-hint {
-    font-size: 11px;
-    color: #555;
-    text-align: center;
-    padding: 8px;
+  /* === MOBILE TWEAKS === */
+  @media (max-width: 480px) {
+    .header h1 { font-size: 18px; }
+    .card-container { height: 260px; }
+    .card-text { font-size: 15px; }
+    .card-back .card-text { font-size: 14px; }
+    .card-face { padding: 20px 16px; }
+    .action-btn { padding: 16px 8px; font-size: 16px; }
   }
-  kbd {
-    background: #222;
-    border: 1px solid #444;
-    border-radius: 4px;
-    padding: 2px 6px;
-    font-size: 11px;
-    font-family: monospace;
+
+  @media (max-width: 360px) {
+    .card-container { height: 240px; }
+    .card-text { font-size: 14px; }
   }
 </style>
 </head>
@@ -209,32 +302,38 @@
 
 <div class="header">
   <h1>JS Interview Flashcards</h1>
-  <div class="subtitle">Scraped from javascript.info — spaced repetition study</div>
+</div>
+
+<div class="streak-bar">
+  <span class="streak-fire" id="streak-icon">&#128293;</span>
+  <span><span class="streak-num" id="streak-count">0</span> day streak</span>
+  <span class="streak-label" id="streak-label"></span>
 </div>
 
 <div class="stats">
-  <div class="stat know"><div class="num" id="know-count">0</div><div class="label">Know it</div></div>
+  <div class="stat know"><div class="num" id="know-count">0</div><div class="label">Know</div></div>
   <div class="stat learning"><div class="num" id="learning-count">0</div><div class="label">Learning</div></div>
-  <div class="stat remaining"><div class="num" id="remaining-count">0</div><div class="label">Remaining</div></div>
+  <div class="stat remaining"><div class="num" id="remaining-count">0</div><div class="label">New</div></div>
 </div>
 
 <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-
 <div class="filters" id="filters"></div>
 
-<div class="card-container" id="card-container" onclick="flipCard()">
-  <div class="card" id="card">
-    <div class="card-face card-front">
-      <div class="card-topic" id="card-topic"></div>
-      <div class="card-label" id="card-number"></div>
-      <div class="card-text" id="card-front"></div>
-      <div class="card-hint">Click or press Space to flip</div>
-    </div>
-    <div class="card-face card-back">
-      <div class="card-topic" id="card-topic-back"></div>
-      <div class="card-label">Answer</div>
-      <div class="card-text" id="card-back"></div>
-      <div class="card-hint">Rate your knowledge below</div>
+<div class="card-wrapper">
+  <div class="card-container" id="card-container" onclick="flipCard()">
+    <div class="card" id="card">
+      <div class="card-face card-front">
+        <div class="card-topic" id="card-topic"></div>
+        <div class="card-number" id="card-number"></div>
+        <div class="card-text" id="card-front"></div>
+        <div class="card-difficulty" id="card-diff"></div>
+        <div class="card-hint">Tap to reveal</div>
+      </div>
+      <div class="card-face card-back">
+        <div class="card-topic" id="card-topic-back"></div>
+        <div class="card-number">Answer</div>
+        <div class="card-text" id="card-back"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -245,20 +344,30 @@
   <button class="action-btn btn-good" onclick="rate(2)">Good</button>
 </div>
 
-<div class="keyboard-hint">
-  <kbd>Space</kbd> flip &nbsp; <kbd>1</kbd> again &nbsp; <kbd>2</kbd> hard &nbsp; <kbd>3</kbd> good &nbsp; <kbd>←</kbd><kbd>→</kbd> skip
+<div class="kbd-hints">
+  <kbd>Space</kbd> flip &nbsp; <kbd>1</kbd> again &nbsp; <kbd>2</kbd> hard &nbsp; <kbd>3</kbd> good
 </div>
 
-<div class="empty-state" id="empty" style="display:none;">
-  <h2>Session complete!</h2>
-  <p>You've reviewed all cards in this topic. Switch topics or reset to study again.</p>
-  <button class="action-btn btn-good" onclick="resetSession()" style="margin-top:16px;">Study Again</button>
+<div class="toast" id="toast"></div>
+
+<div class="summary" id="summary" style="display:none;">
+  <h2>Session Done</h2>
+  <div class="score-big" id="score-pct">0%</div>
+  <div class="score-label">cards rated "Good"</div>
+  <div class="summary-stats">
+    <div class="summary-stat"><div class="num" id="s-reviewed">0</div><div class="label">Reviewed</div></div>
+    <div class="summary-stat"><div class="num" style="color:#4ecdc4" id="s-good">0</div><div class="label">Good</div></div>
+    <div class="summary-stat"><div class="num" style="color:#f59e0b" id="s-hard">0</div><div class="label">Hard</div></div>
+    <div class="summary-stat"><div class="num" style="color:#dc2626" id="s-again">0</div><div class="label">Again</div></div>
+  </div>
+  <div class="summary-msg" id="s-msg"></div>
+  <button class="restart-btn" onclick="resetSession()">Study Again</button>
+  <br><br>
+  <button class="restart-btn" onclick="studyWeakest()" style="background:#f59e0b;">Review Weak Cards</button>
 </div>
 
 <script>
-// ============================================================
-// FLASHCARD DATA — will be populated by scraping agents
-// ============================================================
+// === DATA ===
 let ALL_CARDS = [
   {
     "front": "What are the three ways to declare a variable in JavaScript, and which should you use?",
@@ -1847,165 +1956,230 @@ let ALL_CARDS = [
   }
 ];
 
-// Load cards from external file or embedded data
-function loadCards() { initApp(); }
+// === SPACED REPETITION ===
+const STORAGE = 'js-fc-v2';
+const STREAK_KEY = 'js-fc-streak';
 
-// ============================================================
-// SPACED REPETITION ENGINE (simplified SM-2)
-// ============================================================
-const STORAGE_KEY = 'js-flashcards-progress';
-
-function loadProgress() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-  } catch { return {}; }
-}
-
-function saveProgress() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-}
+function loadProgress() { try { return JSON.parse(localStorage.getItem(STORAGE)) || {}; } catch { return {}; } }
+function saveProgress() { localStorage.setItem(STORAGE, JSON.stringify(progress)); }
 
 let progress = loadProgress();
 let currentFilter = 'all';
 let deck = [];
 let currentIndex = 0;
 let isFlipped = false;
+let sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0 };
 
-function getCardScore(id) {
-  return progress[id] || { score: 0, reviews: 0, lastReview: 0 };
-}
+function getScore(id) { return progress[id] || { s: 0, r: 0, t: 0 }; }
 
+// SM-2 inspired: prioritise cards you got wrong, then unreviewed, then due for review
 function buildDeck() {
-  let cards = currentFilter === 'all'
-    ? [...ALL_CARDS]
-    : ALL_CARDS.filter(c => c.topic === currentFilter);
-
-  // Sort by: cards you got wrong first, then unreviewed, then known
+  let cards = currentFilter === 'all' ? [...ALL_CARDS] : ALL_CARDS.filter(c => c.topic === currentFilter);
+  const now = Date.now();
   cards.sort((a, b) => {
-    const sa = getCardScore(a.front).score;
-    const sb = getCardScore(b.front).score;
-    return sa - sb;
+    const sa = getScore(a.front), sb = getScore(b.front);
+    // Wrong cards first (score 0 with reviews), then new (no reviews), then by due time
+    const prioA = sa.r > 0 && sa.s === 0 ? -1000 : sa.r === 0 ? -500 : sa.s;
+    const prioB = sb.r > 0 && sb.s === 0 ? -1000 : sb.r === 0 ? -500 : sb.s;
+    return prioA - prioB;
   });
-
   return cards;
 }
 
-function initApp() {
-  // Build topic filters
-  const topics = [...new Set(ALL_CARDS.map(c => c.topic))];
-  const filtersEl = document.getElementById('filters');
-  filtersEl.innerHTML = `<button class="filter-btn active" onclick="setFilter('all')">All (${ALL_CARDS.length})</button>`;
-  topics.forEach(t => {
-    const count = ALL_CARDS.filter(c => c.topic === t).length;
-    filtersEl.innerHTML += `<button class="filter-btn" onclick="setFilter('${t.replace(/'/g, "\\'")}')">${t} (${count})</button>`;
-  });
+// === STREAK ===
+function loadStreak() {
+  try { return JSON.parse(localStorage.getItem(STREAK_KEY)) || { count: 0, lastDate: '' }; } catch { return { count: 0, lastDate: '' }; }
+}
+function updateStreak() {
+  const streak = loadStreak();
+  const today = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  if (streak.lastDate === today) return streak;
+  if (streak.lastDate === yesterday) { streak.count++; } else if (streak.lastDate !== today) { streak.count = 1; }
+  streak.lastDate = today;
+  localStorage.setItem(STREAK_KEY, JSON.stringify(streak));
+  return streak;
+}
+function showStreak() {
+  const s = loadStreak();
+  document.getElementById('streak-count').textContent = s.count;
+  document.getElementById('streak-icon').textContent = s.count >= 7 ? '\u{1F525}' : s.count >= 3 ? '\u{1F525}' : '\u{1F4A1}';
+  document.getElementById('streak-label').textContent = s.count >= 7 ? 'On fire!' : s.count >= 3 ? 'Keep going!' : '';
+}
 
+// === TOAST FEEDBACK ===
+function showToast(type) {
+  const el = document.getElementById('toast');
+  const msgs = { 0: ['Try again', 'toast-again'], 1: ['Getting there', 'toast-hard'], 2: ['Nailed it!', 'toast-good'] };
+  const [text, cls] = msgs[type];
+  el.textContent = text;
+  el.className = 'toast ' + cls + ' show';
+  setTimeout(() => { el.className = 'toast'; }, 600);
+}
+
+// === APP ===
+function initApp() {
+  const topics = [...new Set(ALL_CARDS.map(c => c.topic))];
+  const f = document.getElementById('filters');
+  f.innerHTML = '<button class="filter-btn active" onclick="setFilter(\'all\')">All (' + ALL_CARDS.length + ')</button>';
+  topics.forEach(t => {
+    const n = ALL_CARDS.filter(c => c.topic === t).length;
+    f.innerHTML += '<button class="filter-btn" onclick="setFilter(\'' + t.replace(/'/g, "\\'") + '\')">' + t + ' (' + n + ')</button>';
+  });
   deck = buildDeck();
   currentIndex = 0;
+  sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0 };
   showCard();
   updateStats();
+  showStreak();
 }
 
 function setFilter(topic) {
   currentFilter = topic;
   document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.classList.toggle('active',
-      (topic === 'all' && btn.textContent.startsWith('All')) ||
-      btn.textContent.startsWith(topic)
-    );
+    btn.classList.toggle('active', (topic === 'all' && btn.textContent.startsWith('All')) || btn.textContent.startsWith(topic));
   });
   deck = buildDeck();
   currentIndex = 0;
+  sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0 };
+  document.getElementById('summary').style.display = 'none';
+  document.getElementById('card-container').parentElement.style.display = 'flex';
   showCard();
   updateStats();
 }
 
 function showCard() {
-  if (deck.length === 0 || currentIndex >= deck.length) {
-    document.getElementById('card-container').style.display = 'none';
-    document.getElementById('actions').style.display = 'none';
-    document.getElementById('empty').style.display = 'block';
-    return;
-  }
-
-  document.getElementById('card-container').style.display = 'block';
-  document.getElementById('empty').style.display = 'none';
-
+  if (currentIndex >= deck.length) { showSummary(); return; }
+  document.getElementById('card-container').parentElement.style.display = 'flex';
+  document.getElementById('summary').style.display = 'none';
   const card = deck[currentIndex];
+  const score = getScore(card.front);
   document.getElementById('card-front').textContent = card.front;
   document.getElementById('card-back').textContent = card.back;
   document.getElementById('card-topic').textContent = card.topic;
   document.getElementById('card-topic-back').textContent = card.topic;
-  document.getElementById('card-number').textContent = `${currentIndex + 1} / ${deck.length}`;
+  document.getElementById('card-number').textContent = (currentIndex + 1) + ' / ' + deck.length;
+  // Difficulty badge
+  const diff = document.getElementById('card-diff');
+  if (score.r === 0) { diff.textContent = 'New'; diff.className = 'card-difficulty diff-new'; }
+  else if (score.s < 3) { diff.textContent = 'Learning'; diff.className = 'card-difficulty diff-learning'; }
+  else { diff.textContent = 'Known'; diff.className = 'card-difficulty diff-known'; }
 
-  // Reset flip
   isFlipped = false;
-  document.getElementById('card').classList.remove('flipped');
+  const cardEl = document.getElementById('card');
+  cardEl.className = 'card';
   document.getElementById('actions').style.display = 'none';
 }
 
 function flipCard() {
+  if (currentIndex >= deck.length) return;
   isFlipped = !isFlipped;
   document.getElementById('card').classList.toggle('flipped');
-  if (isFlipped) {
-    document.getElementById('actions').style.display = 'flex';
-  } else {
-    document.getElementById('actions').style.display = 'none';
-  }
+  document.getElementById('actions').style.display = isFlipped ? 'flex' : 'none';
 }
 
 function rate(score) {
   const card = deck[currentIndex];
-  const id = card.front;
-  const prev = getCardScore(id);
-
-  // 0 = again (reset), 1 = hard (small bump), 2 = good (learned)
-  progress[id] = {
-    score: score === 0 ? 0 : prev.score + score,
-    reviews: prev.reviews + 1,
-    lastReview: Date.now()
+  const prev = getScore(card.front);
+  progress[card.front] = {
+    s: score === 0 ? 0 : Math.min(prev.s + score, 6),
+    r: prev.r + 1,
+    t: Date.now()
   };
   saveProgress();
 
-  // If "again", push card to end of deck
-  if (score === 0) {
-    deck.push(card);
-  }
+  // Session stats
+  sessionStats.reviewed++;
+  if (score === 0) sessionStats.again++;
+  else if (score === 1) sessionStats.hard++;
+  else sessionStats.good++;
 
-  currentIndex++;
-  showCard();
-  updateStats();
+  // Toast
+  showToast(score);
+
+  // If "again", push to back
+  if (score === 0) deck.push(card);
+
+  // Animate card out
+  const cardEl = document.getElementById('card');
+  cardEl.classList.add(score >= 1 ? 'swipe-right' : 'swipe-left');
+  setTimeout(() => {
+    currentIndex++;
+    showCard();
+    updateStats();
+  }, 250);
+
+  // Update streak on first review of the day
+  if (sessionStats.reviewed === 1) { updateStreak(); showStreak(); }
 }
 
 function updateStats() {
   let know = 0, learning = 0, remaining = 0;
   const cards = currentFilter === 'all' ? ALL_CARDS : ALL_CARDS.filter(c => c.topic === currentFilter);
-
   cards.forEach(c => {
-    const s = getCardScore(c.front);
-    if (s.score >= 3) know++;
-    else if (s.reviews > 0) learning++;
+    const s = getScore(c.front);
+    if (s.s >= 3) know++;
+    else if (s.r > 0) learning++;
     else remaining++;
   });
-
   document.getElementById('know-count').textContent = know;
   document.getElementById('learning-count').textContent = learning;
   document.getElementById('remaining-count').textContent = remaining;
+  document.getElementById('progress').style.width = ((know / (cards.length || 1)) * 100) + '%';
+}
 
-  const total = cards.length || 1;
-  document.getElementById('progress').style.width = `${(know / total) * 100}%`;
+function showSummary() {
+  document.getElementById('card-container').parentElement.style.display = 'none';
+  document.getElementById('actions').style.display = 'none';
+  const s = document.getElementById('summary');
+  s.style.display = 'block';
+  const pct = sessionStats.reviewed > 0 ? Math.round((sessionStats.good / sessionStats.reviewed) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('s-reviewed').textContent = sessionStats.reviewed;
+  document.getElementById('s-good').textContent = sessionStats.good;
+  document.getElementById('s-hard').textContent = sessionStats.hard;
+  document.getElementById('s-again').textContent = sessionStats.again;
+  const msg = pct >= 80 ? "Crushing it! You're interview-ready on these cards." :
+              pct >= 50 ? "Good progress. Review the weak cards to lock them in." :
+              "Keep going — repetition is how this sticks. Hit 'Review Weak Cards'.";
+  document.getElementById('s-msg').textContent = msg;
 }
 
 function resetSession() {
   currentIndex = 0;
   deck = buildDeck();
-  document.getElementById('empty').style.display = 'none';
+  sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0 };
+  document.getElementById('summary').style.display = 'none';
   showCard();
   updateStats();
 }
 
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
+function studyWeakest() {
+  const cards = currentFilter === 'all' ? ALL_CARDS : ALL_CARDS.filter(c => c.topic === currentFilter);
+  deck = cards.filter(c => { const s = getScore(c.front); return s.r > 0 && s.s < 3; });
+  if (deck.length === 0) { deck = cards.filter(c => getScore(c.front).r === 0).slice(0, 20); }
+  currentIndex = 0;
+  sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0 };
+  document.getElementById('summary').style.display = 'none';
+  showCard();
+  updateStats();
+}
+
+// === SWIPE GESTURES (mobile) ===
+let touchStartX = 0;
+document.getElementById('card-container').addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+}, { passive: true });
+document.getElementById('card-container').addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 80 && isFlipped) {
+    if (dx > 0) rate(2);  // swipe right = good
+    else rate(0);          // swipe left = again
+  }
+}, { passive: true });
+
+// === KEYBOARD ===
+document.addEventListener('keydown', e => {
   if (e.code === 'Space') { e.preventDefault(); flipCard(); }
   if (e.key === '1' && isFlipped) rate(0);
   if (e.key === '2' && isFlipped) rate(1);
@@ -2014,8 +2188,8 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft' && currentIndex > 0) { currentIndex--; showCard(); }
 });
 
-// Init
-loadCards();
+// === INIT ===
+initApp();
 </script>
 </body>
 </html>
