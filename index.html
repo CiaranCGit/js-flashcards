@@ -824,6 +824,426 @@ let ALL_CARDS = [
     "front": "Do Object.keys/values/entries include Symbol properties?",
     "back": "No, they skip symbolic properties. Use Object.getOwnPropertySymbols() or Reflect.ownKeys() to include symbols.",
     "topic": "Object.keys/values/entries"
+  },
+  {
+    "front": "What is a closure in JavaScript?",
+    "back": "A closure is a function that remembers and can access variables from its outer (lexical) scope, even after the outer function has returned. All JS functions are closures via the hidden [[Environment]] property.",
+    "topic": "Closures"
+  },
+  {
+    "front": "Do closures capture variable values or references?",
+    "back": "Closures capture variable references, not snapshots of values. This means they always see the current value of the variable at the time they execute.",
+    "topic": "Closures"
+  },
+  {
+    "front": "What is a Lexical Environment?",
+    "back": "An internal object consisting of an Environment Record (stores local variables) and a reference to the outer Lexical Environment. Every function, block, and script has one.",
+    "topic": "Closures"
+  },
+  {
+    "front": "What does this code output?\nfor (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}",
+    "back": "It prints 3, 3, 3. The closure captures the reference to i (declared with var, so function-scoped). By the time the callbacks run, the loop has finished and i is 3. Using let instead fixes this because let creates a new binding per iteration.",
+    "topic": "Closures"
+  },
+  {
+    "front": "How do closures enable data privacy?",
+    "back": "By returning functions that reference variables in the outer scope, those variables become inaccessible from outside. Only the returned functions can read/modify them, creating private state.",
+    "topic": "Closures"
+  },
+  {
+    "front": "When is a closure's Lexical Environment garbage collected?",
+    "back": "Only when all nested functions referencing it become unreachable. As long as any closure references the outer scope, it stays in memory.",
+    "topic": "Closures"
+  },
+  {
+    "front": "How does variable lookup work in nested scopes?",
+    "back": "JS searches the current Lexical Environment first, then walks up the chain of outer environments until the variable is found or the global scope is reached (throwing ReferenceError if not found).",
+    "topic": "Closures"
+  },
+  {
+    "front": "What is the [[Environment]] property on functions?",
+    "back": "A hidden property set at function creation time that stores a reference to the Lexical Environment where the function was created. It never changes, even if the function is called elsewhere.",
+    "topic": "Closures"
+  },
+  {
+    "front": "Each call to an outer function creates a new Lexical Environment. True or false?",
+    "back": "True. Each invocation creates a separate Lexical Environment, so closures from different calls have independent variable sets.",
+    "topic": "Closures"
+  },
+  {
+    "front": "What is the difference between rest parameters and the arguments object?",
+    "back": "Rest parameters (...args) are a real Array with full array methods. The arguments object is array-like but lacks array methods, contains ALL arguments, and is not available in arrow functions.",
+    "topic": "Rest Parameters & Spread"
+  },
+  {
+    "front": "Where must rest parameters appear in a function signature?",
+    "back": "Rest parameters must be the last parameter. They gather all remaining arguments into an array.",
+    "topic": "Rest Parameters & Spread"
+  },
+  {
+    "front": "What is the difference between rest and spread syntax?",
+    "back": "Rest collects multiple elements into an array (used in function parameters/destructuring). Spread expands an iterable into individual elements (used in function calls/array/object literals). Both use ... syntax.",
+    "topic": "Rest Parameters & Spread"
+  },
+  {
+    "front": "Does spread syntax create a deep or shallow copy?",
+    "back": "Shallow copy. [...arr] and {...obj} create new containers, but nested objects/arrays are still shared by reference.",
+    "topic": "Rest Parameters & Spread"
+  },
+  {
+    "front": "Do arrow functions have their own arguments object?",
+    "back": "No. Arrow functions inherit arguments from the enclosing regular function. If there is no enclosing function, arguments is not available.",
+    "topic": "Rest Parameters & Spread"
+  },
+  {
+    "front": "Which is more universal: Array.from() or spread syntax for converting to arrays?",
+    "back": "Array.from() works on both array-likes and iterables. Spread syntax only works with iterables. Use Array.from() for universal conversion.",
+    "topic": "Rest Parameters & Spread"
+  },
+  {
+    "front": "How can you merge two objects using spread?",
+    "back": "const merged = {...obj1, ...obj2}. Properties from obj2 overwrite those in obj1 if keys conflict. This is equivalent to Object.assign({}, obj1, obj2).",
+    "topic": "Rest Parameters & Spread"
+  },
+  {
+    "front": "What is the most common mistake when passing a function to setTimeout?",
+    "back": "Calling the function immediately instead of passing a reference: setTimeout(fn(), 1000) executes fn right away and passes its return value. Correct: setTimeout(fn, 1000).",
+    "topic": "setTimeout & setInterval"
+  },
+  {
+    "front": "What does setTimeout(fn, 0) actually do?",
+    "back": "It schedules fn to run after the current script completes (not immediately). The browser enforces a minimum ~4ms delay after 5 nested timers. It yields to the event loop.",
+    "topic": "setTimeout & setInterval"
+  },
+  {
+    "front": "Why is nested setTimeout preferred over setInterval for repeated tasks?",
+    "back": "Nested setTimeout guarantees a consistent delay between executions (delay starts after the previous call finishes). setInterval counts from the start of execution, so long-running callbacks can overlap or have no gap.",
+    "topic": "setTimeout & setInterval"
+  },
+  {
+    "front": "How do you cancel a setTimeout or setInterval?",
+    "back": "Use clearTimeout(timerId) or clearInterval(timerId) with the ID returned from the scheduling call. The ID variable itself does not become null after cancellation.",
+    "topic": "setTimeout & setInterval"
+  },
+  {
+    "front": "Does setTimeout guarantee exact timing?",
+    "back": "No. CPU load, background tabs, and battery-saver modes can delay execution to 300ms-1000ms or more. The delay is a minimum, not a guarantee.",
+    "topic": "setTimeout & setInterval"
+  },
+  {
+    "front": "What output does this produce?\nfor (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}\nconsole.log('done');",
+    "back": "'done' prints first, then 3, 3, 3. setTimeout callbacks run after the current script completes. With var, all closures share the same i which is 3 after the loop.",
+    "topic": "setTimeout & setInterval"
+  },
+  {
+    "front": "Why does setTimeout prevent garbage collection of its callback?",
+    "back": "The scheduler keeps an internal reference to the callback until it fires (or is cleared). If the callback has closures, the entire outer Lexical Environment stays in memory.",
+    "topic": "setTimeout & setInterval"
+  },
+  {
+    "front": "What does this output?\nconsole.log(1);\nsetTimeout(() => console.log(2), 0);\nPromise.resolve().then(() => console.log(3));\nconsole.log(4);",
+    "back": "1, 4, 3, 2. Synchronous code runs first (1, 4), then microtasks like Promise.then (3), then macrotasks like setTimeout (2).",
+    "topic": "Event Loop & Microtasks"
+  },
+  {
+    "front": "Why does passing an object method to setTimeout lose this?",
+    "back": "setTimeout receives just the function reference, detached from its object. When called, this defaults to window (browser) or undefined (strict mode), not the original object.",
+    "topic": "Function Binding"
+  },
+  {
+    "front": "What does Function.prototype.bind() return?",
+    "back": "A new 'exotic' callable object that permanently fixes this to the provided context. The bound function transparently delegates calls to the original function with the fixed context.",
+    "topic": "Function Binding"
+  },
+  {
+    "front": "Can you rebind a function that was already bound with .bind()?",
+    "back": "No. The context is hard-fixed at bind time. Calling .bind() again on a bound function will not override the original binding.",
+    "topic": "Function Binding"
+  },
+  {
+    "front": "How does bind() differ from call() and apply()?",
+    "back": "bind() returns a new function without invoking it. call() and apply() invoke the function immediately. call() takes arguments individually; apply() takes them as an array.",
+    "topic": "Function Binding"
+  },
+  {
+    "front": "What is partial application with bind()?",
+    "back": "Fixing some arguments of a function to create a specialized version: const double = multiply.bind(null, 2). Use null for context when this is not needed.",
+    "topic": "Function Binding"
+  },
+  {
+    "front": "Do bound functions retain properties of the original function?",
+    "back": "No. A bound function is a new object and does not carry over custom properties from the original function.",
+    "topic": "Function Binding"
+  },
+  {
+    "front": "How do arrow functions handle this differently from bind()?",
+    "back": "Arrow functions inherit this lexically from their enclosing scope at definition time. bind() explicitly sets this to a specific object. Arrow functions have no own this at all.",
+    "topic": "Function Binding"
+  },
+  {
+    "front": "How do you fix this for a method used as an event handler?",
+    "back": "Use element.addEventListener('click', obj.method.bind(obj)) or use an arrow function wrapper: () => obj.method(). Both preserve the correct this context.",
+    "topic": "Function Binding"
+  },
+  {
+    "front": "What are the three states of a Promise?",
+    "back": "Pending (initial, in progress), Fulfilled (resolved successfully via resolve()), and Rejected (failed via reject()). A promise can only transition once from pending; further resolve/reject calls are ignored.",
+    "topic": "Promises"
+  },
+  {
+    "front": "When does the executor function of a Promise run?",
+    "back": "Immediately and synchronously when new Promise(executor) is called, not when handlers are attached.",
+    "topic": "Promises"
+  },
+  {
+    "front": "What happens if you call resolve() twice in a Promise executor?",
+    "back": "Only the first call takes effect. All subsequent resolve() or reject() calls are silently ignored. A promise settles exactly once.",
+    "topic": "Promises"
+  },
+  {
+    "front": "What is the difference between .then(f1, f2) and .then(f1).catch(f2)?",
+    "back": "With .then(f1).catch(f2), errors thrown inside f1 are caught by f2. With .then(f1, f2), errors in f1 are NOT caught by f2 because f2 only handles rejection of the original promise.",
+    "topic": "Promises"
+  },
+  {
+    "front": "What does .finally() do on a Promise?",
+    "back": "Runs a handler regardless of outcome (no arguments received), then passes the result/error through to the next handler. Useful for cleanup. Returned values are ignored; thrown errors propagate.",
+    "topic": "Promises"
+  },
+  {
+    "front": "What happens if you attach .then() to an already-resolved Promise?",
+    "back": "The handler still executes (asynchronously, as a microtask). Promises allow attaching handlers at any time, even after settlement.",
+    "topic": "Promises"
+  },
+  {
+    "front": "Why should you pass Error objects to reject() rather than strings?",
+    "back": "Error objects include a stack trace, making debugging easier. Strings lose call stack information.",
+    "topic": "Promises"
+  },
+  {
+    "front": "How does Promise chaining work?",
+    "back": "Each .then() returns a new Promise. The value returned from a .then() handler becomes the resolved value of that new Promise, allowing sequential .then() calls to process results step by step.",
+    "topic": "Promise Chaining"
+  },
+  {
+    "front": "What happens when a .then() handler returns a Promise?",
+    "back": "The chain waits for that Promise to settle before proceeding. The next .then() receives the resolved value of the returned Promise.",
+    "topic": "Promise Chaining"
+  },
+  {
+    "front": "What is the common mistake with adding multiple .then() to the same promise?",
+    "back": "Adding multiple .then() to one promise is NOT chaining -- they run independently with the same input. True chaining requires each .then() to be called on the result of the previous one.",
+    "topic": "Promise Chaining"
+  },
+  {
+    "front": "What is a thenable object?",
+    "back": "Any object with a .then() method. JavaScript treats thenables like Promises in chains and with await, calling .then() with resolve/reject callbacks. This enables interop with third-party Promise implementations.",
+    "topic": "Promise Chaining"
+  },
+  {
+    "front": "How do errors propagate in a Promise chain?",
+    "back": "An error (thrown or rejected) skips all .then() handlers and jumps to the nearest .catch(). After .catch() handles it, the chain can continue normally if .catch() returns a value.",
+    "topic": "Promise Chaining"
+  },
+  {
+    "front": "What does the async keyword do to a function?",
+    "back": "It makes the function always return a Promise. Non-promise return values are automatically wrapped in Promise.resolve(). It also enables using await inside the function.",
+    "topic": "Async/Await"
+  },
+  {
+    "front": "What does await do?",
+    "back": "It pauses async function execution until the Promise settles, then returns the resolved value. If the Promise rejects, it throws the error as an exception. It does NOT block the main thread.",
+    "topic": "Async/Await"
+  },
+  {
+    "front": "Where can you use await?",
+    "back": "Inside async functions, and at the top level of ES modules (top-level await). Using await in a regular function causes a SyntaxError.",
+    "topic": "Async/Await"
+  },
+  {
+    "front": "How do you handle errors with async/await?",
+    "back": "Wrap await calls in try/catch blocks. The catch block receives the rejection reason. Alternatively, append .catch() to the async function call.",
+    "topic": "Async/Await"
+  },
+  {
+    "front": "How do you run multiple async operations in parallel with await?",
+    "back": "Use await Promise.all([promise1, promise2, ...]). This runs all promises concurrently and waits for all to complete. Sequential awaits would run them one after another.",
+    "topic": "Async/Await"
+  },
+  {
+    "front": "Does await only work with native Promises?",
+    "back": "No. await works with any thenable (object with a .then() method). It calls .then() with resolve/reject to get the result.",
+    "topic": "Async/Await"
+  },
+  {
+    "front": "What happens with unhandled rejections in async functions?",
+    "back": "If an async function's rejected promise has no .catch() and is not awaited in a try/catch, it becomes an unhandled promise rejection, triggering the 'unhandledrejection' event.",
+    "topic": "Async/Await"
+  },
+  {
+    "front": "Does try...catch work with asynchronous code like setTimeout?",
+    "back": "No. try/catch only catches synchronous runtime errors. By the time a setTimeout callback executes, the try/catch block has already finished. For async errors, use try/catch inside the callback or use Promises.",
+    "topic": "Error Handling"
+  },
+  {
+    "front": "What are the three properties of an Error object?",
+    "back": "name (error type, e.g. 'TypeError'), message (human-readable description), and stack (call stack trace, non-standard but widely supported).",
+    "topic": "Error Handling"
+  },
+  {
+    "front": "What is the rethrowing pattern in try/catch?",
+    "back": "Catch only errors you know how to handle (check with instanceof or err.name), and rethrow everything else with throw err. This prevents swallowing unexpected errors.",
+    "topic": "Error Handling"
+  },
+  {
+    "front": "When does the finally block execute?",
+    "back": "Always -- after try if no error, after catch if there was one. It runs before control returns to calling code, even if try/catch has a return statement.",
+    "topic": "Error Handling"
+  },
+  {
+    "front": "Can try/catch handle syntax (parse-time) errors?",
+    "back": "No. try/catch only handles runtime errors in valid, parseable code. Syntax errors prevent the code from being parsed at all.",
+    "topic": "Error Handling"
+  },
+  {
+    "front": "What is window.onerror used for?",
+    "back": "A global handler for uncaught errors that escape all try/catch blocks. Typically used to log errors to external services. It cannot recover from the error.",
+    "topic": "Error Handling"
+  },
+  {
+    "front": "Can you omit the error parameter in a catch block?",
+    "back": "Yes. Modern JavaScript allows catch { ... } without (err) when you don't need error details.",
+    "topic": "Error Handling"
+  },
+  {
+    "front": "What is a JavaScript class under the hood?",
+    "back": "A class is a function. class User {} creates a function named User from the constructor, and stores methods on User.prototype. typeof User === 'function'.",
+    "topic": "Classes"
+  },
+  {
+    "front": "What are the key differences between class syntax and function constructors?",
+    "back": "Classes must be called with new (throws otherwise), methods are non-enumerable by default, class body is always in strict mode, and classes are not hoisted like function declarations.",
+    "topic": "Classes"
+  },
+  {
+    "front": "Where do class methods live vs class fields?",
+    "back": "Methods are stored on the prototype (shared across instances). Class fields are set on each individual instance (not on prototype).",
+    "topic": "Classes"
+  },
+  {
+    "front": "How do class field arrow functions solve the this problem?",
+    "back": "Declaring a method as a class field with arrow syntax (e.g., handleClick = () => {...}) creates a per-instance function that captures this from the constructor, so it works correctly as a callback.",
+    "topic": "Classes"
+  },
+  {
+    "front": "Can you create a class expression and assign it to a variable?",
+    "back": "Yes. let User = class { ... }; is valid. Named class expressions (class MyClass { }) have the name accessible only inside the class body.",
+    "topic": "Classes"
+  },
+  {
+    "front": "What does the extends keyword do internally?",
+    "back": "It sets Child.prototype.__proto__ = Parent.prototype, establishing the prototype chain so instances of Child can access Parent's methods.",
+    "topic": "Class Inheritance"
+  },
+  {
+    "front": "Why must a derived class constructor call super() before using this?",
+    "back": "Derived constructors have [[ConstructorKind]]:\"derived\" which skips automatic object creation. The parent constructor must run first (via super()) to create the object. Accessing this before super() throws ReferenceError.",
+    "topic": "Class Inheritance"
+  },
+  {
+    "front": "If a derived class has no constructor, what happens?",
+    "back": "An implicit constructor is generated: constructor(...args) { super(...args); }. It passes all arguments through to the parent constructor.",
+    "topic": "Class Inheritance"
+  },
+  {
+    "front": "What is [[HomeObject]] and why does it matter for super?",
+    "back": "[[HomeObject]] is an internal property on methods that tracks which class/object defined them. It allows super to correctly resolve the parent prototype. Only methods defined with method syntax (not function properties) get [[HomeObject]].",
+    "topic": "Class Inheritance"
+  },
+  {
+    "front": "Does the parent constructor use the child's overridden class fields?",
+    "back": "No. The parent constructor always uses its own field values because child class fields are initialized after super() returns. However, overridden methods ARE called from the parent constructor.",
+    "topic": "Class Inheritance"
+  },
+  {
+    "front": "Can you use an expression after extends?",
+    "back": "Yes. extends accepts any expression that evaluates to a class/constructor, enabling patterns like class Foo extends mixin(Base) for dynamic inheritance.",
+    "topic": "Class Inheritance"
+  },
+  {
+    "front": "What is the difference between named and default exports?",
+    "back": "Named exports require curly braces on import and enforce consistent naming. Default exports (one per file) are imported without braces and can be given any local name.",
+    "topic": "Modules"
+  },
+  {
+    "front": "What happens when a module is imported multiple times?",
+    "back": "The module code executes only once (on first import). All subsequent imports receive the same module object. This means module-level state is shared across all importers.",
+    "topic": "Modules"
+  },
+  {
+    "front": "What does export * from './module' re-export?",
+    "back": "It re-exports all named exports but deliberately excludes the default export. To also re-export the default, you must add: export {default} from './module'.",
+    "topic": "Modules"
+  },
+  {
+    "front": "Can you use import/export inside an if block or function?",
+    "back": "No. import/export must be at the top level of a module. They are static declarations resolved at parse time, not runtime. Use dynamic import() for conditional loading.",
+    "topic": "Modules"
+  },
+  {
+    "front": "What are two key characteristics of ES modules?",
+    "back": "Modules always run in strict mode and have their own scope (top-level variables are not global). Each module is evaluated only once.",
+    "topic": "Modules"
+  },
+  {
+    "front": "What does import './module' (with no bindings) do?",
+    "back": "It runs the module's code for its side effects but does not import any values. Useful for modules that set up globals or register things.",
+    "topic": "Modules"
+  },
+  {
+    "front": "What is [[Prototype]] in JavaScript?",
+    "back": "A hidden internal property on every object that references another object (or null). When a property is not found on an object, JavaScript follows [[Prototype]] to look it up on the prototype.",
+    "topic": "Prototypal Inheritance"
+  },
+  {
+    "front": "How does prototypal property lookup work?",
+    "back": "When reading a property, JS checks the object first. If not found, it follows the [[Prototype]] chain, checking each prototype until the property is found or the chain ends at null.",
+    "topic": "Prototypal Inheritance"
+  },
+  {
+    "front": "Does writing a property use the prototype chain?",
+    "back": "No. Write and delete operations work directly on the object, never on the prototype. Exception: setter properties defined on the prototype will be called.",
+    "topic": "Prototypal Inheritance"
+  },
+  {
+    "front": "What is the difference between for...in and Object.keys() regarding prototypes?",
+    "back": "for...in iterates over both own AND inherited enumerable properties. Object.keys() returns only the object's own enumerable properties, ignoring the prototype chain.",
+    "topic": "Prototypal Inheritance"
+  },
+  {
+    "front": "What does hasOwnProperty() do?",
+    "back": "Returns true only if the property exists directly on the object (not inherited from the prototype). Useful for filtering own properties in a for...in loop.",
+    "topic": "Prototypal Inheritance"
+  },
+  {
+    "front": "What is the modern way to get/set an object's prototype?",
+    "back": "Use Object.getPrototypeOf(obj) and Object.setPrototypeOf(obj, proto). The __proto__ accessor is a legacy approach. Setting prototype after creation is slow; prefer Object.create().",
+    "topic": "Prototypal Inheritance"
+  },
+  {
+    "front": "What does this refer to when calling an inherited method?",
+    "back": "Always the object before the dot (the calling object), not the prototype where the method is defined. Methods are shared via prototype, but this reflects the actual caller.",
+    "topic": "Prototypal Inheritance"
+  },
+  {
+    "front": "Can prototype chains be circular?",
+    "back": "No. JavaScript throws an error if you try to create a circular prototype reference. The chain must terminate at null.",
+    "topic": "Prototypal Inheritance"
+  },
+  {
+    "front": "What is the relationship between __proto__ and Function.prototype?",
+    "back": "Function.prototype is the object that becomes __proto__ of instances created with new. Constructor.prototype === instance.__proto__. They are related but distinct properties.",
+    "topic": "Prototypal Inheritance"
   }
 ];
 
