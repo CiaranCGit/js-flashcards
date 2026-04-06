@@ -35,6 +35,35 @@
     background-clip: text;
   }
 
+  /* === MODE SWITCHER === */
+  .mode-switcher {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 8px 16px 4px;
+    width: 100%;
+    max-width: 400px;
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #2a2a3e;
+    background: transparent;
+    color: #888;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mode-btn:first-child { border-radius: 10px 0 0 10px; }
+  .mode-btn:last-child { border-radius: 0 10px 10px 0; }
+  .mode-btn:not(:first-child) { border-left: none; }
+  .mode-btn.active {
+    background: #4ecdc4;
+    color: #0f0f23;
+    border-color: #4ecdc4;
+  }
+
   /* === STREAK === */
   .streak-bar {
     display: flex;
@@ -218,6 +247,8 @@
   .toast.toast-again { background: rgba(220,38,38,0.9); color: white; }
   .toast.toast-hard { background: rgba(245,158,11,0.9); color: #1a1a2e; }
   .toast.toast-good { background: rgba(78,205,196,0.9); color: #1a1a2e; }
+  .toast.toast-correct { background: rgba(78,205,196,0.9); color: #1a1a2e; }
+  .toast.toast-wrong { background: rgba(220,38,38,0.9); color: white; }
 
   /* === ACTIONS === */
   .actions {
@@ -244,6 +275,181 @@
   .btn-hard { background: #f59e0b; color: #1a1a2e; }
   .btn-good { background: #4ecdc4; color: #1a1a2e; }
 
+  /* === QUIZ MODE (Multiple Choice) === */
+  .quiz-area {
+    width: 100%;
+    max-width: 440px;
+    padding: 8px 16px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .quiz-question-box {
+    background: linear-gradient(145deg, #1a1a3e, #1e1e4a);
+    border: 1px solid #2a2a4a;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    border-radius: 20px;
+    padding: 24px 20px;
+    text-align: center;
+    position: relative;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .quiz-question-box .card-topic { position: absolute; top: 14px; left: 18px; }
+  .quiz-question-box .card-number { position: absolute; top: 14px; right: 18px; }
+  .quiz-question-box .card-difficulty { position: absolute; bottom: 14px; left: 18px; }
+  .quiz-question-text {
+    font-size: 17px;
+    line-height: 1.55;
+    color: #fff;
+    font-weight: 500;
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px 0;
+  }
+  .quiz-option {
+    width: 100%;
+    min-height: 52px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 2px solid #2a2a4a;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-size: 14px;
+    line-height: 1.45;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    word-wrap: break-word;
+  }
+  .quiz-option:active { transform: scale(0.98); }
+  .quiz-option.correct {
+    border-color: #4ecdc4;
+    background: rgba(78,205,196,0.15);
+    color: #4ecdc4;
+  }
+  .quiz-option.wrong {
+    border-color: #dc2626;
+    background: rgba(220,38,38,0.15);
+    color: #dc2626;
+  }
+  .quiz-option.disabled { pointer-events: none; opacity: 0.7; }
+
+  /* === TYPE MODE === */
+  .type-area {
+    width: 100%;
+    max-width: 440px;
+    padding: 8px 16px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .type-question-box {
+    background: linear-gradient(145deg, #1a1a3e, #1e1e4a);
+    border: 1px solid #2a2a4a;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    border-radius: 20px;
+    padding: 24px 20px;
+    text-align: center;
+    position: relative;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .type-question-box .card-topic { position: absolute; top: 14px; left: 18px; }
+  .type-question-box .card-number { position: absolute; top: 14px; right: 18px; }
+  .type-question-box .card-difficulty { position: absolute; bottom: 14px; left: 18px; }
+  .type-question-text {
+    font-size: 17px;
+    line-height: 1.55;
+    color: #fff;
+    font-weight: 500;
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+  .type-input-row {
+    display: flex;
+    gap: 8px;
+  }
+  .type-input {
+    flex: 1;
+    min-height: 52px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 2px solid #2a2a4a;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-size: 15px;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .type-input:focus { border-color: #4ecdc4; }
+  .type-submit-btn {
+    padding: 14px 24px;
+    border-radius: 14px;
+    border: none;
+    background: #4ecdc4;
+    color: #0f0f23;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .type-submit-btn:active { transform: scale(0.95); }
+
+  /* Type result area */
+  .type-result {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    padding: 4px 0;
+  }
+  .type-result-box {
+    border-radius: 14px;
+    padding: 16px;
+    line-height: 1.55;
+    font-size: 14px;
+  }
+  .type-result-yours {
+    background: #1a1a2e;
+    border: 1px solid #2a2a4a;
+    color: #aaa;
+  }
+  .type-result-correct {
+    background: rgba(78,205,196,0.08);
+    border: 1px solid #2d5a2d;
+    color: #c0e8c0;
+  }
+  .type-result-label {
+    font-size: 11px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .type-match-score {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 8px 0;
+  }
+  .term-matched { color: #4ecdc4; font-weight: 600; }
+  .term-missed { color: #f59e0b; font-weight: 600; text-decoration: underline; text-decoration-style: dotted; }
+
   /* === SESSION SUMMARY === */
   .summary {
     text-align: center;
@@ -260,7 +466,7 @@
   }
   .summary .score-big { font-size: 56px; font-weight: 800; color: #4ecdc4; margin: 16px 0; }
   .summary .score-label { color: #888; font-size: 13px; }
-  .summary-stats { display: flex; gap: 24px; justify-content: center; margin: 20px 0; }
+  .summary-stats { display: flex; gap: 24px; justify-content: center; margin: 20px 0; flex-wrap: wrap; }
   .summary-stat { text-align: center; }
   .summary-stat .num { font-size: 24px; font-weight: 700; }
   .summary-stat .label { font-size: 11px; color: #666; }
@@ -290,6 +496,8 @@
     .card-back .card-text { font-size: 14px; }
     .card-face { padding: 20px 16px; }
     .action-btn { padding: 16px 8px; font-size: 16px; }
+    .quiz-question-text { font-size: 15px; }
+    .type-question-text { font-size: 15px; }
   }
 
   @media (max-width: 360px) {
@@ -302,6 +510,12 @@
 
 <div class="header">
   <h1>JS Interview Flashcards</h1>
+</div>
+
+<div class="mode-switcher">
+  <button class="mode-btn active" onclick="setMode('classic')">Classic</button>
+  <button class="mode-btn" onclick="setMode('quiz')">Quiz</button>
+  <button class="mode-btn" onclick="setMode('type')">Type</button>
 </div>
 
 <div class="streak-bar">
@@ -319,7 +533,8 @@
 <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
 <div class="filters" id="filters"></div>
 
-<div class="card-wrapper">
+<!-- CLASSIC MODE -->
+<div class="card-wrapper" id="classic-area">
   <div class="card-container" id="card-container" onclick="flipCard()">
     <div class="card" id="card">
       <div class="card-face card-front">
@@ -344,7 +559,48 @@
   <button class="action-btn btn-good" onclick="rate(2)">Good</button>
 </div>
 
-<div class="kbd-hints">
+<!-- QUIZ MODE -->
+<div class="quiz-area" id="quiz-area">
+  <div class="quiz-question-box">
+    <div class="card-topic" id="quiz-topic"></div>
+    <div class="card-number" id="quiz-number"></div>
+    <div class="quiz-question-text" id="quiz-question"></div>
+    <div class="card-difficulty" id="quiz-diff"></div>
+  </div>
+  <div class="quiz-options" id="quiz-options"></div>
+</div>
+
+<!-- TYPE MODE -->
+<div class="type-area" id="type-area">
+  <div class="type-question-box">
+    <div class="card-topic" id="type-topic"></div>
+    <div class="card-number" id="type-number"></div>
+    <div class="type-question-text" id="type-question"></div>
+    <div class="card-difficulty" id="type-diff"></div>
+  </div>
+  <div class="type-input-row" id="type-input-row">
+    <textarea class="type-input" id="type-input" rows="2" placeholder="Type your answer..."></textarea>
+    <button class="type-submit-btn" onclick="submitTypeAnswer()">Submit</button>
+  </div>
+  <div class="type-result" id="type-result">
+    <div class="type-match-score" id="type-match-score"></div>
+    <div class="type-result-box type-result-yours">
+      <div class="type-result-label">Your answer</div>
+      <div id="type-yours-text"></div>
+    </div>
+    <div class="type-result-box type-result-correct">
+      <div class="type-result-label">Correct answer</div>
+      <div id="type-correct-text"></div>
+    </div>
+  </div>
+  <div class="actions" id="type-actions" style="display:none;">
+    <button class="action-btn btn-again" onclick="rate(0)">Again</button>
+    <button class="action-btn btn-hard" onclick="rate(1)">Hard</button>
+    <button class="action-btn btn-good" onclick="rate(2)">Good</button>
+  </div>
+</div>
+
+<div class="kbd-hints" id="kbd-hints">
   <kbd>Space</kbd> flip &nbsp; <kbd>1</kbd> again &nbsp; <kbd>2</kbd> hard &nbsp; <kbd>3</kbd> good
 </div>
 
@@ -353,12 +609,15 @@
 <div class="summary" id="summary" style="display:none;">
   <h2>Session Done</h2>
   <div class="score-big" id="score-pct">0%</div>
-  <div class="score-label">cards rated "Good"</div>
+  <div class="score-label" id="score-label">cards rated "Good"</div>
   <div class="summary-stats">
     <div class="summary-stat"><div class="num" id="s-reviewed">0</div><div class="label">Reviewed</div></div>
     <div class="summary-stat"><div class="num" style="color:#4ecdc4" id="s-good">0</div><div class="label">Good</div></div>
     <div class="summary-stat"><div class="num" style="color:#f59e0b" id="s-hard">0</div><div class="label">Hard</div></div>
     <div class="summary-stat"><div class="num" style="color:#dc2626" id="s-again">0</div><div class="label">Again</div></div>
+  </div>
+  <div class="summary-stats" id="quiz-accuracy-row" style="display:none;">
+    <div class="summary-stat"><div class="num" style="color:#a855f7" id="s-quiz-acc">0%</div><div class="label">Quiz Accuracy</div></div>
   </div>
   <div class="summary-msg" id="s-msg"></div>
   <button class="restart-btn" onclick="resetSession()">Study Again</button>
@@ -1956,9 +2215,11 @@ let ALL_CARDS = [
   }
 ];
 
+
 // === SPACED REPETITION ===
 const STORAGE = 'js-fc-v2';
 const STREAK_KEY = 'js-fc-streak';
+const MODE_KEY = 'js-fc-mode';
 
 function loadProgress() { try { return JSON.parse(localStorage.getItem(STORAGE)) || {}; } catch { return {}; } }
 function saveProgress() { localStorage.setItem(STORAGE, JSON.stringify(progress)); }
@@ -1968,7 +2229,10 @@ let currentFilter = 'all';
 let deck = [];
 let currentIndex = 0;
 let isFlipped = false;
-let sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0 };
+let currentMode = localStorage.getItem(MODE_KEY) || 'classic';
+let sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0, quizCorrect: 0, quizTotal: 0 };
+let quizAnswered = false;
+let typeSubmitted = false;
 
 function getScore(id) { return progress[id] || { s: 0, r: 0, t: 0 }; }
 
@@ -1978,7 +2242,6 @@ function buildDeck() {
   const now = Date.now();
   cards.sort((a, b) => {
     const sa = getScore(a.front), sb = getScore(b.front);
-    // Wrong cards first (score 0 with reviews), then new (no reviews), then by due time
     const prioA = sa.r > 0 && sa.s === 0 ? -1000 : sa.r === 0 ? -500 : sa.s;
     const prioB = sb.r > 0 && sb.s === 0 ? -1000 : sb.r === 0 ? -500 : sb.s;
     return prioA - prioB;
@@ -2008,13 +2271,45 @@ function showStreak() {
 }
 
 // === TOAST FEEDBACK ===
-function showToast(type) {
+function showToast(type, customText) {
   const el = document.getElementById('toast');
   const msgs = { 0: ['Try again', 'toast-again'], 1: ['Getting there', 'toast-hard'], 2: ['Nailed it!', 'toast-good'] };
-  const [text, cls] = msgs[type];
-  el.textContent = text;
-  el.className = 'toast ' + cls + ' show';
+  if (customText) {
+    el.textContent = customText;
+    el.className = 'toast ' + (type === 'correct' ? 'toast-correct' : 'toast-wrong') + ' show';
+  } else {
+    const [text, cls] = msgs[type];
+    el.textContent = text;
+    el.className = 'toast ' + cls + ' show';
+  }
   setTimeout(() => { el.className = 'toast'; }, 600);
+}
+
+// === MODE SWITCHER ===
+function setMode(mode) {
+  currentMode = mode;
+  localStorage.setItem(MODE_KEY, mode);
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.toLowerCase() === mode);
+  });
+  // Update kbd hints
+  const hints = document.getElementById('kbd-hints');
+  if (mode === 'classic') {
+    hints.innerHTML = '<kbd>Space</kbd> flip &nbsp; <kbd>1</kbd> again &nbsp; <kbd>2</kbd> hard &nbsp; <kbd>3</kbd> good';
+  } else if (mode === 'quiz') {
+    hints.innerHTML = '<kbd>1</kbd>-<kbd>4</kbd> select answer';
+  } else {
+    hints.innerHTML = '<kbd>Enter</kbd> submit &nbsp; <kbd>1</kbd> again &nbsp; <kbd>2</kbd> hard &nbsp; <kbd>3</kbd> good';
+  }
+  showCurrentCard();
+}
+
+// === DIFFICULTY BADGE HELPER ===
+function setDiffBadge(el, front) {
+  const score = getScore(front);
+  if (score.r === 0) { el.textContent = 'New'; el.className = 'card-difficulty diff-new'; }
+  else if (score.s < 3) { el.textContent = 'Learning'; el.className = 'card-difficulty diff-learning'; }
+  else { el.textContent = 'Known'; el.className = 'card-difficulty diff-known'; }
 }
 
 // === APP ===
@@ -2028,8 +2323,9 @@ function initApp() {
   });
   deck = buildDeck();
   currentIndex = 0;
-  sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0 };
-  showCard();
+  sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0, quizCorrect: 0, quizTotal: 0 };
+  // Restore mode
+  setMode(currentMode);
   updateStats();
   showStreak();
 }
@@ -2041,44 +2337,209 @@ function setFilter(topic) {
   });
   deck = buildDeck();
   currentIndex = 0;
-  sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0 };
+  sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0, quizCorrect: 0, quizTotal: 0 };
   document.getElementById('summary').style.display = 'none';
-  document.getElementById('card-container').parentElement.style.display = 'flex';
-  showCard();
+  showCurrentCard();
   updateStats();
 }
 
-function showCard() {
+function hideAllAreas() {
+  document.getElementById('classic-area').style.display = 'none';
+  document.getElementById('actions').style.display = 'none';
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('type-area').style.display = 'none';
+  document.getElementById('type-actions').style.display = 'none';
+}
+
+function showCurrentCard() {
   if (currentIndex >= deck.length) { showSummary(); return; }
-  document.getElementById('card-container').parentElement.style.display = 'flex';
   document.getElementById('summary').style.display = 'none';
+  hideAllAreas();
+
+  if (currentMode === 'classic') showClassicCard();
+  else if (currentMode === 'quiz') showQuizCard();
+  else if (currentMode === 'type') showTypeCard();
+}
+
+// === CLASSIC MODE ===
+function showClassicCard() {
+  const area = document.getElementById('classic-area');
+  area.style.display = 'flex';
+
   const card = deck[currentIndex];
-  const score = getScore(card.front);
   document.getElementById('card-front').textContent = card.front;
   document.getElementById('card-back').textContent = card.back;
   document.getElementById('card-topic').textContent = card.topic;
   document.getElementById('card-topic-back').textContent = card.topic;
   document.getElementById('card-number').textContent = (currentIndex + 1) + ' / ' + deck.length;
-  // Difficulty badge
-  const diff = document.getElementById('card-diff');
-  if (score.r === 0) { diff.textContent = 'New'; diff.className = 'card-difficulty diff-new'; }
-  else if (score.s < 3) { diff.textContent = 'Learning'; diff.className = 'card-difficulty diff-learning'; }
-  else { diff.textContent = 'Known'; diff.className = 'card-difficulty diff-known'; }
+  setDiffBadge(document.getElementById('card-diff'), card.front);
 
   isFlipped = false;
-  const cardEl = document.getElementById('card');
-  cardEl.className = 'card';
+  document.getElementById('card').className = 'card';
   document.getElementById('actions').style.display = 'none';
 }
 
 function flipCard() {
+  if (currentMode !== 'classic') return;
   if (currentIndex >= deck.length) return;
   isFlipped = !isFlipped;
   document.getElementById('card').classList.toggle('flipped');
   document.getElementById('actions').style.display = isFlipped ? 'flex' : 'none';
 }
 
+// === QUIZ MODE ===
+function showQuizCard() {
+  const area = document.getElementById('quiz-area');
+  area.style.display = 'flex';
+  quizAnswered = false;
+
+  const card = deck[currentIndex];
+  document.getElementById('quiz-question').textContent = card.front;
+  document.getElementById('quiz-topic').textContent = card.topic;
+  document.getElementById('quiz-number').textContent = (currentIndex + 1) + ' / ' + deck.length;
+  setDiffBadge(document.getElementById('quiz-diff'), card.front);
+
+  // Generate 4 options: correct + 3 distractors
+  const correctAnswer = card.back;
+  let distractorPool = ALL_CARDS.filter(c => c.front !== card.front);
+  // Prefer same topic distractors
+  let sameTopic = distractorPool.filter(c => c.topic === card.topic);
+  if (sameTopic.length < 3) sameTopic = distractorPool;
+  // Shuffle and pick 3
+  shuffleArray(sameTopic);
+  const distractors = sameTopic.slice(0, 3).map(c => c.back);
+
+  const options = [correctAnswer, ...distractors];
+  shuffleArray(options);
+
+  const optionsEl = document.getElementById('quiz-options');
+  optionsEl.innerHTML = '';
+  options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.textContent = opt;
+    btn.dataset.correct = opt === correctAnswer ? 'true' : 'false';
+    btn.onclick = () => handleQuizAnswer(btn, opt === correctAnswer);
+    optionsEl.appendChild(btn);
+  });
+}
+
+function handleQuizAnswer(btn, isCorrect) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+
+  sessionStats.quizTotal++;
+  const allBtns = document.querySelectorAll('.quiz-option');
+
+  if (isCorrect) {
+    sessionStats.quizCorrect++;
+    btn.classList.add('correct');
+    showToast('correct', 'Correct!');
+    // Auto-advance
+    allBtns.forEach(b => b.classList.add('disabled'));
+    setTimeout(() => {
+      // Auto-rate as "good" for quiz
+      rateCard(2);
+    }, 800);
+  } else {
+    btn.classList.add('wrong');
+    // Highlight correct
+    allBtns.forEach(b => {
+      if (b.dataset.correct === 'true') b.classList.add('correct');
+      b.classList.add('disabled');
+    });
+    showToast('wrong', 'Wrong');
+    setTimeout(() => {
+      // Auto-rate as "again" for wrong quiz answer
+      rateCard(0);
+    }, 1500);
+  }
+}
+
+// === TYPE MODE ===
+function showTypeCard() {
+  const area = document.getElementById('type-area');
+  area.style.display = 'flex';
+  typeSubmitted = false;
+
+  const card = deck[currentIndex];
+  document.getElementById('type-question').textContent = card.front;
+  document.getElementById('type-topic').textContent = card.topic;
+  document.getElementById('type-number').textContent = (currentIndex + 1) + ' / ' + deck.length;
+  setDiffBadge(document.getElementById('type-diff'), card.front);
+
+  // Reset input state
+  document.getElementById('type-input-row').style.display = 'flex';
+  document.getElementById('type-result').style.display = 'none';
+  document.getElementById('type-actions').style.display = 'none';
+  const input = document.getElementById('type-input');
+  input.value = '';
+  setTimeout(() => input.focus(), 100);
+}
+
+function submitTypeAnswer() {
+  if (typeSubmitted) return;
+  typeSubmitted = true;
+
+  const card = deck[currentIndex];
+  const userAnswer = document.getElementById('type-input').value.trim();
+  const correctAnswer = card.back;
+
+  // Fuzzy match
+  const stopWords = new Set(['the', 'and', 'that', 'this', 'with', 'from', 'when', 'which', 'because', 'returns', 'function', 'for', 'are', 'not', 'but', 'its', 'can', 'has', 'was', 'you', 'all', 'will', 'each', 'than', 'into', 'only', 'like', 'use', 'used', 'does']);
+  const extractTerms = (text) => {
+    return text.toLowerCase()
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter(w => w.length >= 4 && !stopWords.has(w));
+  };
+
+  const correctTerms = [...new Set(extractTerms(correctAnswer))];
+  const userLower = userAnswer.toLowerCase();
+
+  const matched = [];
+  const missed = [];
+  correctTerms.forEach(term => {
+    if (userLower.includes(term)) matched.push(term);
+    else missed.push(term);
+  });
+
+  const total = correctTerms.length || 1;
+  const matchCount = matched.length;
+
+  // Show results
+  document.getElementById('type-input-row').style.display = 'none';
+  document.getElementById('type-result').style.display = 'flex';
+  document.getElementById('type-actions').style.display = 'flex';
+
+  // Match score
+  const scoreColor = matchCount >= total * 0.7 ? '#4ecdc4' : matchCount >= total * 0.4 ? '#f59e0b' : '#dc2626';
+  document.getElementById('type-match-score').innerHTML =
+    '<span style="color:' + scoreColor + '">You got ' + matchCount + '/' + total + ' key concepts</span>';
+
+  // User answer display
+  document.getElementById('type-yours-text').textContent = userAnswer || '(no answer)';
+
+  // Correct answer with highlighted terms
+  let highlighted = correctAnswer;
+  // Highlight matched terms in green, missed in amber
+  matched.forEach(term => {
+    const regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    highlighted = highlighted.replace(regex, '<span class="term-matched">$1</span>');
+  });
+  missed.forEach(term => {
+    const regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    highlighted = highlighted.replace(regex, '<span class="term-missed">$1</span>');
+  });
+  document.getElementById('type-correct-text').innerHTML = highlighted;
+}
+
+// === RATING (shared across modes) ===
 function rate(score) {
+  rateCard(score);
+}
+
+function rateCard(score) {
   const card = deck[currentIndex];
   const prev = getScore(card.front);
   progress[card.front] = {
@@ -2094,20 +2555,26 @@ function rate(score) {
   else if (score === 1) sessionStats.hard++;
   else sessionStats.good++;
 
-  // Toast
-  showToast(score);
+  // Toast (for classic and type modes)
+  if (currentMode === 'classic') showToast(score);
 
   // If "again", push to back
   if (score === 0) deck.push(card);
 
-  // Animate card out
-  const cardEl = document.getElementById('card');
-  cardEl.classList.add(score >= 1 ? 'swipe-right' : 'swipe-left');
-  setTimeout(() => {
+  if (currentMode === 'classic') {
+    // Animate card out
+    const cardEl = document.getElementById('card');
+    cardEl.classList.add(score >= 1 ? 'swipe-right' : 'swipe-left');
+    setTimeout(() => {
+      currentIndex++;
+      showCurrentCard();
+      updateStats();
+    }, 250);
+  } else {
     currentIndex++;
-    showCard();
+    showCurrentCard();
     updateStats();
-  }, 250);
+  }
 
   // Update streak on first review of the day
   if (sessionStats.reviewed === 1) { updateStreak(); showStreak(); }
@@ -2129,28 +2596,40 @@ function updateStats() {
 }
 
 function showSummary() {
-  document.getElementById('card-container').parentElement.style.display = 'none';
-  document.getElementById('actions').style.display = 'none';
+  hideAllAreas();
   const s = document.getElementById('summary');
   s.style.display = 'block';
+
   const pct = sessionStats.reviewed > 0 ? Math.round((sessionStats.good / sessionStats.reviewed) * 100) : 0;
   document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-label').textContent = currentMode === 'quiz' ? 'quiz accuracy' : 'cards rated "Good"';
   document.getElementById('s-reviewed').textContent = sessionStats.reviewed;
   document.getElementById('s-good').textContent = sessionStats.good;
   document.getElementById('s-hard').textContent = sessionStats.hard;
   document.getElementById('s-again').textContent = sessionStats.again;
+
+  // Quiz accuracy row
+  const quizRow = document.getElementById('quiz-accuracy-row');
+  if (currentMode === 'quiz' && sessionStats.quizTotal > 0) {
+    quizRow.style.display = 'flex';
+    const qAcc = Math.round((sessionStats.quizCorrect / sessionStats.quizTotal) * 100);
+    document.getElementById('s-quiz-acc').textContent = qAcc + '%';
+  } else {
+    quizRow.style.display = 'none';
+  }
+
   const msg = pct >= 80 ? "Crushing it! You're interview-ready on these cards." :
               pct >= 50 ? "Good progress. Review the weak cards to lock them in." :
-              "Keep going — repetition is how this sticks. Hit 'Review Weak Cards'.";
+              "Keep going \u2014 repetition is how this sticks. Hit 'Review Weak Cards'.";
   document.getElementById('s-msg').textContent = msg;
 }
 
 function resetSession() {
   currentIndex = 0;
   deck = buildDeck();
-  sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0 };
+  sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0, quizCorrect: 0, quizTotal: 0 };
   document.getElementById('summary').style.display = 'none';
-  showCard();
+  showCurrentCard();
   updateStats();
 }
 
@@ -2159,20 +2638,29 @@ function studyWeakest() {
   deck = cards.filter(c => { const s = getScore(c.front); return s.r > 0 && s.s < 3; });
   if (deck.length === 0) { deck = cards.filter(c => getScore(c.front).r === 0).slice(0, 20); }
   currentIndex = 0;
-  sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0 };
+  sessionStats = { reviewed: 0, good: 0, hard: 0, again: 0, quizCorrect: 0, quizTotal: 0 };
   document.getElementById('summary').style.display = 'none';
-  showCard();
+  showCurrentCard();
   updateStats();
 }
 
-// === SWIPE GESTURES (mobile) ===
+// === SHUFFLE HELPER ===
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// === SWIPE GESTURES (mobile, classic mode only) ===
 let touchStartX = 0;
 document.getElementById('card-container').addEventListener('touchstart', e => {
   touchStartX = e.touches[0].clientX;
 }, { passive: true });
 document.getElementById('card-container').addEventListener('touchend', e => {
   const dx = e.changedTouches[0].clientX - touchStartX;
-  if (Math.abs(dx) > 80 && isFlipped) {
+  if (Math.abs(dx) > 80 && isFlipped && currentMode === 'classic') {
     if (dx > 0) rate(2);  // swipe right = good
     else rate(0);          // swipe left = again
   }
@@ -2180,12 +2668,30 @@ document.getElementById('card-container').addEventListener('touchend', e => {
 
 // === KEYBOARD ===
 document.addEventListener('keydown', e => {
-  if (e.code === 'Space') { e.preventDefault(); flipCard(); }
-  if (e.key === '1' && isFlipped) rate(0);
-  if (e.key === '2' && isFlipped) rate(1);
-  if (e.key === '3' && isFlipped) rate(2);
-  if (e.key === 'ArrowRight') { currentIndex++; showCard(); }
-  if (e.key === 'ArrowLeft' && currentIndex > 0) { currentIndex--; showCard(); }
+  if (currentMode === 'classic') {
+    if (e.code === 'Space') { e.preventDefault(); flipCard(); }
+    if (e.key === '1' && isFlipped) rate(0);
+    if (e.key === '2' && isFlipped) rate(1);
+    if (e.key === '3' && isFlipped) rate(2);
+    if (e.key === 'ArrowRight') { currentIndex++; showCurrentCard(); }
+    if (e.key === 'ArrowLeft' && currentIndex > 0) { currentIndex--; showCurrentCard(); }
+  } else if (currentMode === 'quiz') {
+    if (!quizAnswered && e.key >= '1' && e.key <= '4') {
+      const btns = document.querySelectorAll('.quiz-option');
+      const idx = parseInt(e.key) - 1;
+      if (btns[idx]) btns[idx].click();
+    }
+  } else if (currentMode === 'type') {
+    if (!typeSubmitted && e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitTypeAnswer();
+    }
+    if (typeSubmitted) {
+      if (e.key === '1') rate(0);
+      if (e.key === '2') rate(1);
+      if (e.key === '3') rate(2);
+    }
+  }
 });
 
 // === INIT ===
