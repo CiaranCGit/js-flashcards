@@ -1244,6 +1244,306 @@ let ALL_CARDS = [
     "front": "What is the relationship between __proto__ and Function.prototype?",
     "back": "Function.prototype is the object that becomes __proto__ of instances created with new. Constructor.prototype === instance.__proto__. They are related but distinct properties.",
     "topic": "Prototypal Inheritance"
+  },
+  {
+    "front": "What is TypeScript and how does it relate to JavaScript?",
+    "back": "TypeScript is a statically-typed superset of JavaScript that compiles (transpiles) to plain JavaScript. All valid JavaScript is valid TypeScript, but TypeScript adds optional type annotations, interfaces, generics, and other features.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What are the basic primitive types in TypeScript?",
+    "back": "string, number, boolean, null, undefined, symbol, and bigint. TypeScript also has special types: any, unknown, never, and void.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the 'any' type in TypeScript?",
+    "back": "The 'any' type disables all type checking for a value. It allows any operation on the value without compiler errors, effectively opting out of TypeScript's type system.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the 'unknown' type in TypeScript?",
+    "back": "The 'unknown' type is the type-safe counterpart of 'any'. You can assign any value to 'unknown', but you cannot perform any operations on it without first narrowing it to a more specific type via type guards.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the difference between 'any' and 'unknown'?",
+    "back": "'any' disables type checking entirely — you can do anything with it. 'unknown' requires you to narrow the type before using it, making it much safer. Prefer 'unknown' over 'any' when the type is truly not known.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the 'never' type in TypeScript?",
+    "back": "The 'never' type represents values that never occur — e.g., a function that always throws or has an infinite loop. It is a subtype of every type but no type is a subtype of 'never' (except 'never' itself).",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the 'void' type in TypeScript?",
+    "back": "'void' represents the absence of a return value. Functions that don't explicitly return anything have a return type of 'void'. Unlike 'never', the function does complete — it just doesn't return a value.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the difference between 'void' and 'never'?",
+    "back": "'void' means a function returns but produces no value (returns undefined). 'never' means the function never returns at all — it either throws an error or runs forever.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is a union type in TypeScript?",
+    "back": "A union type allows a value to be one of several types, written with the pipe operator: string | number. The value can be any one of the listed types, and you must narrow it before using type-specific operations.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is an intersection type in TypeScript?",
+    "back": "An intersection type combines multiple types into one using the & operator: Type A & Type B. The resulting type has all properties from both types. Used to compose object types together.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the difference between union (|) and intersection (&) types?",
+    "back": "Union (A | B) means the value is A OR B. Intersection (A & B) means the value is A AND B — it must satisfy both types simultaneously. Unions narrow options; intersections combine them.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is a TypeScript interface?",
+    "back": "An interface defines the shape of an object by specifying its property names and types. Interfaces can be extended, implemented by classes, and are open for declaration merging.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is a TypeScript type alias?",
+    "back": "A type alias (declared with 'type') gives a name to any type — primitives, unions, intersections, tuples, objects, etc. Unlike interfaces, type aliases cannot be re-opened or merged.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What are the key differences between 'interface' and 'type'?",
+    "back": "Interfaces support declaration merging (multiple declarations are merged) and can be extended with 'extends'. Type aliases cannot be re-opened but can represent unions, intersections, tuples, and primitives. For object shapes, they are mostly interchangeable.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "When should you use 'interface' vs 'type'?",
+    "back": "Use 'interface' for object shapes you might extend or implement, and for public APIs (declaration merging is useful for libraries). Use 'type' for unions, intersections, mapped types, tuples, or when you need features interfaces don't support.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is declaration merging in TypeScript?",
+    "back": "Declaration merging is when multiple interface declarations with the same name are automatically combined into a single interface. This only works with interfaces, not type aliases. It's useful for extending third-party types.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What are generics in TypeScript?",
+    "back": "Generics are type variables that allow you to create reusable components that work with multiple types while maintaining type safety. They let you parameterize types, e.g., function identity<T>(arg: T): T returns the same type it receives.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is a generic constraint in TypeScript?",
+    "back": "A generic constraint limits what types a type parameter can accept using the 'extends' keyword. For example, <T extends { length: number }> ensures T must have a length property.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does <T extends keyof U> mean?",
+    "back": "It constrains the generic type T to be one of the keys of type U. This is commonly used in functions like Pick or property accessor functions to ensure the key actually exists on the object type.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What are enums in TypeScript?",
+    "back": "Enums define a set of named constants. Numeric enums auto-increment from 0 (or a custom start), and string enums require explicit string values for each member. They exist at runtime as real objects.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What are the gotchas with numeric enums in TypeScript?",
+    "back": "Numeric enums allow reverse mapping (value to name), which can cause unexpected behavior. They also allow assigning any number to an enum-typed variable. Prefer string enums or 'as const' objects for safer alternatives.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is 'const enum' and how does it differ from a regular enum?",
+    "back": "'const enum' is fully inlined at compile time — no runtime object is generated. This improves performance and bundle size, but you lose reverse mapping and cannot iterate over members at runtime.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "Why might you prefer 'as const' objects over enums?",
+    "back": "'as const' objects are plain JavaScript (no runtime overhead from enum compilation), they preserve literal types, work well with tree-shaking, and avoid the numeric enum reverse-mapping gotcha. They're often considered more idiomatic.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is type narrowing in TypeScript?",
+    "back": "Type narrowing is the process of refining a broad type to a more specific one within a code block. TypeScript's control flow analysis narrows types after checks like typeof, instanceof, equality checks, and custom type guards.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is a type guard in TypeScript?",
+    "back": "A type guard is an expression that performs a runtime check and narrows the type within the truthy branch. Built-in guards include typeof, instanceof, and 'in'. Custom type guards use the 'is' keyword: function isString(x: unknown): x is string.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is a type predicate in TypeScript?",
+    "back": "A type predicate is a return type annotation of the form 'paramName is Type' used in custom type guard functions. When the function returns true, TypeScript narrows the parameter to that type in the calling scope.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is a discriminated union (tagged union)?",
+    "back": "A discriminated union is a union type where each member has a common literal property (the discriminant) that TypeScript can use to narrow the type. Example: { kind: 'circle'; radius: number } | { kind: 'square'; side: number }.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "How do you use a discriminated union to narrow types?",
+    "back": "Check the discriminant property with if/switch statements. TypeScript uses control flow analysis to narrow to the specific variant: switch(shape.kind) { case 'circle': /* shape is Circle here */ }.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does the 'keyof' operator do in TypeScript?",
+    "back": "'keyof' takes an object type and produces a string or numeric literal union of its keys. For example, keyof { name: string; age: number } yields 'name' | 'age'.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does 'typeof' do in a type context in TypeScript?",
+    "back": "In a type position, 'typeof' extracts the TypeScript type of a JavaScript value or variable. For example, const obj = { x: 1 }; type T = typeof obj; gives { x: number }. This is different from the runtime typeof operator.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is a mapped type in TypeScript?",
+    "back": "A mapped type creates a new type by iterating over the keys of another type using the syntax { [K in keyof T]: NewType }. Utility types like Partial, Required, and Readonly are implemented as mapped types.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is a conditional type in TypeScript?",
+    "back": "A conditional type selects one of two types based on a condition: T extends U ? X : Y. If T is assignable to U, the type is X; otherwise Y. They enable powerful type-level logic and are used heavily in utility types.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does Partial<T> do?",
+    "back": "Partial<T> makes all properties of T optional. It constructs a type with all properties of T set to optional (?). Useful for update/patch operations where you may only provide some fields.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does Required<T> do?",
+    "back": "Required<T> makes all properties of T required (removes optional modifiers). It is the opposite of Partial<T>.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does Readonly<T> do?",
+    "back": "Readonly<T> makes all properties of T readonly, preventing reassignment after creation. Note: it is shallow — nested objects are not deeply frozen.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does Pick<T, K> do?",
+    "back": "Pick<T, K> creates a type by selecting a set of properties K (a union of string literals) from T. Example: Pick<User, 'name' | 'email'> creates a type with only name and email.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does Omit<T, K> do?",
+    "back": "Omit<T, K> creates a type by removing the specified properties K from T. It is the inverse of Pick. Example: Omit<User, 'password'> creates a User type without the password field.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does Record<K, T> do?",
+    "back": "Record<K, T> constructs an object type whose property keys are K and values are T. Example: Record<string, number> is an object with string keys and number values. Useful for dictionaries and lookup maps.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does Exclude<T, U> do?",
+    "back": "Exclude<T, U> removes from union type T all members that are assignable to U. Example: Exclude<'a' | 'b' | 'c', 'a'> yields 'b' | 'c'.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does Extract<T, U> do?",
+    "back": "Extract<T, U> extracts from union type T all members that are assignable to U. It is the opposite of Exclude. Example: Extract<string | number | boolean, string> yields string.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does NonNullable<T> do?",
+    "back": "NonNullable<T> removes null and undefined from the type T. Example: NonNullable<string | null | undefined> yields string.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does ReturnType<T> do?",
+    "back": "ReturnType<T> extracts the return type of a function type T. Example: ReturnType<() => string> yields string. The argument must be a function type.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is a type assertion in TypeScript?",
+    "back": "A type assertion tells TypeScript to treat a value as a specific type using 'value as Type' or '<Type>value' syntax. It does NOT perform runtime conversion — it only affects the compiler. Use with caution as it bypasses type checking.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the difference between type assertion and type casting?",
+    "back": "TypeScript has type assertions (compile-time only, no runtime effect) not type casting. Type assertions tell the compiler to treat a value as a type. Unlike casting in other languages, no runtime conversion happens — the emitted JavaScript is unchanged.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What are function overloads in TypeScript?",
+    "back": "Function overloads let you define multiple function signatures for different parameter/return type combinations, followed by one implementation signature. TypeScript resolves which overload matches at the call site for precise typing.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the 'infer' keyword in TypeScript?",
+    "back": "The 'infer' keyword is used within conditional types to declare a type variable that TypeScript infers from context. Example: type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never; infers the return type R.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is structural typing (duck typing) in TypeScript?",
+    "back": "TypeScript uses structural typing: two types are compatible if their structures match (same properties and types), regardless of their names. If an object has all required properties of an interface, it satisfies that interface.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the difference between structural and nominal typing?",
+    "back": "Structural typing (TypeScript) checks type compatibility by shape/structure. Nominal typing (Java, C#) checks by explicit name/declaration. In TypeScript, { name: string } is assignable to any interface requiring a name: string property.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is type inference in TypeScript?",
+    "back": "Type inference is TypeScript's ability to automatically determine types without explicit annotations. TypeScript infers types from initialization values, return statements, and contextual typing (e.g., callback parameters).",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the 'as const' assertion?",
+    "back": "'as const' makes a value deeply readonly and narrows all literal types to their exact values instead of widening them. For example, const x = [1, 2] as const gives type readonly [1, 2] instead of number[].",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What are tuple types in TypeScript?",
+    "back": "A tuple is a fixed-length array where each element has a specific type. Example: [string, number] is a two-element tuple. Unlike arrays, tuples enforce both the number and types of elements at each position.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the 'satisfies' operator in TypeScript?",
+    "back": "The 'satisfies' operator (TS 4.9+) validates that a value matches a type without widening or changing the inferred type. It gives you type checking AND preserves the narrow literal types, unlike 'as' which overrides inference.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the difference between 'implements' and 'extends' in TypeScript?",
+    "back": "'extends' creates a subclass that inherits implementation from a parent class. 'implements' declares that a class must satisfy an interface's contract without inheriting any implementation — the class must provide its own.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What are TypeScript decorators?",
+    "back": "Decorators are special declarations (prefixed with @) that can be attached to classes, methods, properties, or parameters to modify their behavior. They are a stage 3 ECMAScript proposal and require experimentalDecorators or the TC39 decorator syntax in TS 5.0+.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the 'in' operator used for in TypeScript type narrowing?",
+    "back": "The 'in' operator checks if a property exists on an object and narrows the type accordingly. Example: if ('swim' in animal) narrows animal to a type that has a 'swim' property.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is an index signature in TypeScript?",
+    "back": "An index signature declares the types for keys and values when you don't know all property names ahead of time: { [key: string]: number }. It allows an object to have any number of string-keyed properties with number values.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is the difference between 'declare' keyword and regular declarations?",
+    "back": "'declare' tells TypeScript that a variable, function, or class exists (defined elsewhere) without emitting any JavaScript. It's used for ambient declarations, like typing global variables or third-party libraries without type definitions.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What are .d.ts files?",
+    "back": "Declaration files (.d.ts) contain only type information with no implementation. They describe the shape of existing JavaScript libraries so TypeScript can type-check code using those libraries. They emit no JavaScript.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What is strict mode in TypeScript (strict: true)?",
+    "back": "Setting strict: true in tsconfig enables all strict type-checking options at once, including strictNullChecks, noImplicitAny, strictFunctionTypes, and others. It catches more bugs but requires more explicit typing.",
+    "topic": "TypeScript"
+  },
+  {
+    "front": "What does 'strictNullChecks' do?",
+    "back": "When enabled, null and undefined are not assignable to other types unless explicitly included in the type (e.g., string | null). This prevents common null reference errors by forcing you to handle nullable values.",
+    "topic": "TypeScript"
   }
 ];
 
