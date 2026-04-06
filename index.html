@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS Interview Flashcards</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0f0f23;
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .header {
+    text-align: center;
+    padding: 24px 16px 8px;
+    width: 100%;
+    max-width: 700px;
+  }
+  .header h1 {
+    font-size: 24px;
+    background: linear-gradient(to right, #4ecdc4, #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 4px;
+  }
+  .header .subtitle { font-size: 13px; color: #888; }
+
+  .stats {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    padding: 12px;
+    font-size: 13px;
+  }
+  .stat { text-align: center; }
+  .stat .num { font-size: 20px; font-weight: 700; }
+  .stat .label { color: #888; font-size: 11px; }
+  .stat.know .num { color: #4ecdc4; }
+  .stat.learning .num { color: #f59e0b; }
+  .stat.remaining .num { color: #888; }
+
+  .filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 8px 16px;
+    max-width: 700px;
+  }
+  .filter-btn {
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #333;
+    background: transparent;
+    color: #aaa;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: #4ecdc4; color: #4ecdc4; }
+  .filter-btn.active { background: #4ecdc4; color: #0f0f23; border-color: #4ecdc4; font-weight: 600; }
+
+  .card-container {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 600px;
+    height: 320px;
+    margin: 16px;
+    cursor: pointer;
+  }
+  .card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+  }
+  .card.flipped { transform: rotateY(180deg); }
+  .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 32px;
+    text-align: center;
+  }
+  .card-front {
+    background: linear-gradient(135deg, #1a1a3e, #1e1e4a);
+    border: 1px solid #333;
+  }
+  .card-back {
+    background: linear-gradient(135deg, #1a2e1a, #1e3a1e);
+    border: 1px solid #2d5a2d;
+    transform: rotateY(180deg);
+  }
+  .card-topic {
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    font-size: 11px;
+    color: #4ecdc4;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+  .card-label {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    font-size: 11px;
+    color: #888;
+  }
+  .card-text {
+    font-size: 18px;
+    line-height: 1.6;
+    max-width: 100%;
+  }
+  .card-front .card-text { color: #fff; }
+  .card-back .card-text { color: #b0e0b0; font-size: 16px; }
+  .card-hint {
+    position: absolute;
+    bottom: 16px;
+    font-size: 12px;
+    color: #555;
+  }
+
+  .actions {
+    display: flex;
+    gap: 12px;
+    padding: 8px 16px 24px;
+  }
+  .action-btn {
+    padding: 12px 32px;
+    border-radius: 12px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .action-btn:hover { transform: translateY(-2px); }
+  .btn-again {
+    background: #dc2626;
+    color: white;
+  }
+  .btn-hard {
+    background: #f59e0b;
+    color: #0f0f23;
+  }
+  .btn-good {
+    background: #4ecdc4;
+    color: #0f0f23;
+  }
+  .btn-skip {
+    background: #333;
+    color: #aaa;
+  }
+
+  .progress-bar {
+    width: 100%;
+    max-width: 600px;
+    height: 4px;
+    background: #222;
+    border-radius: 2px;
+    margin: 0 16px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, #4ecdc4, #a855f7);
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+  }
+  .empty-state h2 { color: #4ecdc4; margin-bottom: 8px; }
+
+  .keyboard-hint {
+    font-size: 11px;
+    color: #555;
+    text-align: center;
+    padding: 8px;
+  }
+  kbd {
+    background: #222;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-family: monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>JS Interview Flashcards</h1>
+  <div class="subtitle">Scraped from javascript.info — spaced repetition study</div>
+</div>
+
+<div class="stats">
+  <div class="stat know"><div class="num" id="know-count">0</div><div class="label">Know it</div></div>
+  <div class="stat learning"><div class="num" id="learning-count">0</div><div class="label">Learning</div></div>
+  <div class="stat remaining"><div class="num" id="remaining-count">0</div><div class="label">Remaining</div></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+<div class="filters" id="filters"></div>
+
+<div class="card-container" id="card-container" onclick="flipCard()">
+  <div class="card" id="card">
+    <div class="card-face card-front">
+      <div class="card-topic" id="card-topic"></div>
+      <div class="card-label" id="card-number"></div>
+      <div class="card-text" id="card-front"></div>
+      <div class="card-hint">Click or press Space to flip</div>
+    </div>
+    <div class="card-face card-back">
+      <div class="card-topic" id="card-topic-back"></div>
+      <div class="card-label">Answer</div>
+      <div class="card-text" id="card-back"></div>
+      <div class="card-hint">Rate your knowledge below</div>
+    </div>
+  </div>
+</div>
+
+<div class="actions" id="actions" style="display:none;">
+  <button class="action-btn btn-again" onclick="rate(0)">Again</button>
+  <button class="action-btn btn-hard" onclick="rate(1)">Hard</button>
+  <button class="action-btn btn-good" onclick="rate(2)">Good</button>
+</div>
+
+<div class="keyboard-hint">
+  <kbd>Space</kbd> flip &nbsp; <kbd>1</kbd> again &nbsp; <kbd>2</kbd> hard &nbsp; <kbd>3</kbd> good &nbsp; <kbd>←</kbd><kbd>→</kbd> skip
+</div>
+
+<div class="empty-state" id="empty" style="display:none;">
+  <h2>Session complete!</h2>
+  <p>You've reviewed all cards in this topic. Switch topics or reset to study again.</p>
+  <button class="action-btn btn-good" onclick="resetSession()" style="margin-top:16px;">Study Again</button>
+</div>
+
+<script>
+// ============================================================
+// FLASHCARD DATA — will be populated by scraping agents
+// ============================================================
+let ALL_CARDS = [
+  {
+    "front": "What are the three ways to declare a variable in JavaScript, and which should you use?",
+    "back": "let (block-scoped, reassignable), const (block-scoped, not reassignable), and var (function-scoped, legacy). Prefer const by default, use let when reassignment is needed, avoid var.",
+    "topic": "Variables"
+  },
+  {
+    "front": "What happens if you declare a variable with let twice in the same scope?",
+    "back": "You get a SyntaxError. Repeated declarations of the same variable with let are not allowed in the same scope.",
+    "topic": "Variables"
+  },
+  {
+    "front": "What characters are allowed in JavaScript variable names?",
+    "back": "Letters, digits, $ and _. The first character cannot be a digit. Names are case-sensitive. Reserved words (let, class, return, function) cannot be used.",
+    "topic": "Variables"
+  },
+  {
+    "front": "What happens if you assign to a variable without declaring it (no let/const/var) outside strict mode?",
+    "back": "JavaScript silently creates a global variable. In strict mode ('use strict'), this throws a ReferenceError. This is a common source of bugs.",
+    "topic": "Variables"
+  },
+  {
+    "front": "When should you use UPPER_CASE constant names like COLOR_RED?",
+    "back": "Only for hard-coded values known before execution (like hex color codes). Constants that are calculated at runtime (like page load time) should use normal camelCase.",
+    "topic": "Variables"
+  },
+  {
+    "front": "What are the 8 data types in JavaScript?",
+    "back": "7 primitives: Number, BigInt, String, Boolean, null, undefined, Symbol. Plus 1 non-primitive: Object.",
+    "topic": "Data Types"
+  },
+  {
+    "front": "What does typeof null return, and why?",
+    "back": "It returns \"object\". This is an officially recognized bug from early JavaScript that's kept for backward compatibility. null is its own type, not an object.",
+    "topic": "Data Types"
+  },
+  {
+    "front": "What does typeof function(){} return?",
+    "back": "It returns \"function\". Even though functions are objects in JavaScript, typeof gives them special treatment and returns \"function\" instead of \"object\".",
+    "topic": "Data Types"
+  },
+  {
+    "front": "What is the difference between null and undefined?",
+    "back": "undefined means a variable has been declared but not assigned a value (the default state). null is an explicitly assigned value meaning \"empty\" or \"unknown\".",
+    "topic": "Data Types"
+  },
+  {
+    "front": "What is BigInt and when would you use it?",
+    "back": "BigInt represents integers of arbitrary length, created by appending n (e.g., 123n). Use it when numbers exceed the safe integer range of ±(2^53 - 1), such as for cryptography or microsecond timestamps.",
+    "topic": "Data Types"
+  },
+  {
+    "front": "What does Number(undefined) return vs Number(null)?",
+    "back": "Number(undefined) returns NaN. Number(null) returns 0. This asymmetry is a common interview gotcha.",
+    "topic": "Type Conversions"
+  },
+  {
+    "front": "What does Number(\"\") return? What about Number(\"  \")?",
+    "back": "Both return 0. When converting a string to a number, whitespace is stripped first, and an empty string converts to 0.",
+    "topic": "Type Conversions"
+  },
+  {
+    "front": "What are the falsy values in JavaScript?",
+    "back": "0, \"\" (empty string), null, undefined, NaN, and false. Everything else is truthy — including \"0\", \" \", and empty arrays/objects.",
+    "topic": "Type Conversions"
+  },
+  {
+    "front": "Is Boolean(\"0\") true or false? Why?",
+    "back": "It's true. \"0\" is a non-empty string, and all non-empty strings are truthy. Only the empty string \"\" is falsy.",
+    "topic": "Type Conversions"
+  },
+  {
+    "front": "What does Number(\"123z\") return?",
+    "back": "NaN. Numeric conversion of a string fails if the string contains non-numeric characters (after trimming whitespace). It's all-or-nothing — unlike parseInt which would return 123.",
+    "topic": "Type Conversions"
+  },
+  {
+    "front": "What does '2' + 1 return? What about '6' - 2?",
+    "back": "'2' + 1 returns \"21\" (string concatenation because + works with strings). '6' - 2 returns 4 (subtraction always converts to numbers). Only + has this string behavior.",
+    "topic": "Operators"
+  },
+  {
+    "front": "What does 2 + 2 + '1' evaluate to? What about '1' + 2 + 2?",
+    "back": "2 + 2 + '1' = \"41\" (numeric add first, then string concat). '1' + 2 + 2 = \"122\" (once a string appears, everything after concatenates). Operators evaluate left to right.",
+    "topic": "Operators"
+  },
+  {
+    "front": "What does the unary + operator do to a non-number value?",
+    "back": "It converts the value to a number, equivalent to Number(). For example: +true is 1, +\"\" is 0, +\"3\" is 3.",
+    "topic": "Operators"
+  },
+  {
+    "front": "What is the difference between ++x (prefix) and x++ (postfix)?",
+    "back": "Both increment x by 1, but ++x returns the new value after incrementing, while x++ returns the old value before incrementing.",
+    "topic": "Operators"
+  },
+  {
+    "front": "What does the comma operator do? What does (1 + 2, 3 + 4) return?",
+    "back": "The comma operator evaluates all expressions but returns only the last one. (1 + 2, 3 + 4) returns 7. It has very low precedence, so parentheses are usually needed.",
+    "topic": "Operators"
+  },
+  {
+    "front": "What is the difference between == and ===?",
+    "back": "== (loose equality) converts operands to the same type before comparing, so 0 == false is true. === (strict equality) checks value AND type with no conversion, so 0 === false is false.",
+    "topic": "Comparisons"
+  },
+  {
+    "front": "What does null == undefined return? What about null === undefined?",
+    "back": "null == undefined is true (special rule: they equal each other with ==). null === undefined is false (different types). null and undefined don't == anything else.",
+    "topic": "Comparisons"
+  },
+  {
+    "front": "Why is null >= 0 true, but null > 0 and null == 0 both false?",
+    "back": "Comparisons (>=, >, <, <=) convert null to 0 via numeric conversion, so null >= 0 means 0 >= 0 (true) and null > 0 means 0 > 0 (false). But == has special rules where null only equals undefined, not 0.",
+    "topic": "Comparisons"
+  },
+  {
+    "front": "How does JavaScript compare strings like 'Bee' > 'Be'?",
+    "back": "Strings are compared character by character using Unicode values (lexicographic order). If all characters match but one string is longer, the longer string is greater. So 'Bee' > 'Be' is true. Lowercase letters have higher Unicode values than uppercase.",
+    "topic": "Comparisons"
+  },
+  {
+    "front": "What happens when you compare undefined with a number using > or <?",
+    "back": "undefined converts to NaN for numeric comparisons, and any comparison with NaN returns false. So undefined > 0, undefined < 0, and undefined == 0 are all false.",
+    "topic": "Comparisons"
+  },
+  {
+    "front": "What values are treated as falsy in an if() condition?",
+    "back": "0, \"\" (empty string), null, undefined, NaN, and false. All other values are truthy, including \"0\", \" \" (space string), and empty objects/arrays.",
+    "topic": "Conditional Branching"
+  },
+  {
+    "front": "Can the ternary operator replace if/else? Should it?",
+    "back": "Technically yes, and ternaries can be chained. But best practice is to use ternary only for choosing between two values (assignment), not for executing different code branches with side effects. Use if/else for that.",
+    "topic": "Conditional Branching"
+  },
+  {
+    "front": "What does the || (OR) operator actually return?",
+    "back": "It returns the first truthy value (not converted to boolean), or the last value if all are falsy. Example: null || 0 || \"hello\" returns \"hello\". This is why || is used for default values.",
+    "topic": "Logical Operators"
+  },
+  {
+    "front": "What does the && (AND) operator actually return?",
+    "back": "It returns the first falsy value (not converted to boolean), or the last value if all are truthy. Example: 1 && 2 && 3 returns 3. Example: 1 && null && 3 returns null.",
+    "topic": "Logical Operators"
+  },
+  {
+    "front": "What is short-circuit evaluation in || and &&?",
+    "back": "|| stops at the first truthy value, && stops at the first falsy value. Remaining operands are not evaluated. This means side effects in skipped operands never execute: true || alert('hi') — the alert never runs.",
+    "topic": "Logical Operators"
+  },
+  {
+    "front": "Which has higher precedence: && or ||?",
+    "back": "&& has higher precedence than ||. So a && b || c && d is evaluated as (a && b) || (c && d), not left to right.",
+    "topic": "Logical Operators"
+  },
+  {
+    "front": "What does the double NOT (!!) do?",
+    "back": "It converts a value to its boolean equivalent. The first ! converts to boolean and inverts, the second ! inverts back. Equivalent to Boolean(value). Example: !!\"hello\" is true, !!0 is false.",
+    "topic": "Logical Operators"
+  },
+  {
+    "front": "What is the difference between || and ?? (nullish coalescing)?",
+    "back": "|| returns the first truthy value (treats 0, \"\", false as falsy). ?? returns the first defined value (only treats null and undefined as nullish). Use ?? when 0 or \"\" are valid values you want to keep.",
+    "topic": "Logical Operators"
+  },
+  {
+    "front": "Can you use ?? together with || or && without parentheses?",
+    "back": "No. JavaScript throws a SyntaxError if you mix ?? with || or && without explicit parentheses. You must write (a ?? b) || c or a ?? (b || c).",
+    "topic": "Logical Operators"
+  },
+  {
+    "front": "What is the key difference between while and do...while loops?",
+    "back": "A while loop checks the condition before each iteration (may never execute). A do...while loop checks after each iteration, so the body always executes at least once.",
+    "topic": "Loops"
+  },
+  {
+    "front": "What is the scope of a variable declared with let inside a for loop?",
+    "back": "It is scoped to the loop block only. for (let i = 0; ...) { } — i is not accessible outside the loop. If declared with var, it would be accessible outside.",
+    "topic": "Loops"
+  },
+  {
+    "front": "What are labels in JavaScript loops and how do they work?",
+    "back": "Labels like outer: for(...) let you break or continue outer loops from inside nested loops. break outer jumps out of the labeled loop entirely. Labels only work with loops, not arbitrary code.",
+    "topic": "Loops"
+  },
+  {
+    "front": "Can you use break or continue inside a ternary operator?",
+    "back": "No. break and continue are statements, not expressions. They must be inside a loop's code block and cannot be used with the ternary ? operator.",
+    "topic": "Loops"
+  },
+  {
+    "front": "What type of equality does the switch statement use?",
+    "back": "switch uses strict equality (===). This means the string \"3\" will NOT match the number 3. Type matters — a common source of bugs when using prompt() which returns strings.",
+    "topic": "Switch"
+  },
+  {
+    "front": "What happens if you forget break in a switch case?",
+    "back": "Execution falls through to the next case (and the next, and so on) without checking the case values. This continues until a break is hit or the switch ends.",
+    "topic": "Switch"
+  },
+  {
+    "front": "How do you make multiple switch cases run the same code?",
+    "back": "Stack the cases without breaks between them: case 3: case 5: /* shared code */ break; This works because of fall-through behavior.",
+    "topic": "Switch"
+  },
+  {
+    "front": "Can switch and case values be expressions?",
+    "back": "Yes. Both switch and case allow arbitrary expressions: switch(+a) and case b + 1 are valid. The expressions are evaluated and compared with ===.",
+    "topic": "Switch"
+  },
+  {
+    "front": "What does a function return if there is no return statement?",
+    "back": "It returns undefined. An empty return statement (just return;) also returns undefined.",
+    "topic": "Functions"
+  },
+  {
+    "front": "Are function parameters passed by value or by reference in JavaScript?",
+    "back": "Primitives are passed by value (a copy is made — changes inside the function don't affect the original). Objects are passed by reference to the same object in memory.",
+    "topic": "Functions"
+  },
+  {
+    "front": "What is variable shadowing in functions?",
+    "back": "When a function declares a local variable with the same name as an outer variable, the local one takes precedence inside the function. The outer variable is unaffected.",
+    "topic": "Functions"
+  },
+  {
+    "front": "When are default parameter values evaluated in JavaScript?",
+    "back": "Default parameters are evaluated every time the function is called without that argument, not once at definition time. So function f(arr = []) creates a new array on each call.",
+    "topic": "Functions"
+  },
+  {
+    "front": "What triggers a default parameter value: missing argument, or passing undefined?",
+    "back": "Both. A default value is used when the parameter is undefined — either because the argument was omitted or explicitly passed as undefined. Passing null does NOT trigger the default.",
+    "topic": "Functions"
+  },
+  {
+    "front": "What is the difference between a function declaration and a function expression?",
+    "back": "A declaration (function foo() {}) is hoisted and available before it's defined in code. An expression (let foo = function() {}) is only available after the assignment executes. Declarations are also block-scoped in strict mode.",
+    "topic": "Functions"
+  },
+  {
+    "front": "What is the syntax for an arrow function with a single parameter?",
+    "back": "Parentheses are optional with one parameter: let double = n => n * 2; With zero or multiple parameters, parentheses are required: () => ... or (a, b) => ...",
+    "topic": "Arrow Functions"
+  },
+  {
+    "front": "When do you need an explicit return in an arrow function?",
+    "back": "When using curly braces {} for a multiline body, you must write return explicitly. Without braces, a single expression is implicitly returned: n => n * 2 returns the result automatically.",
+    "topic": "Arrow Functions"
+  },
+  {
+    "front": "What does this arrow function return: let f = () => { 1 + 2 }?",
+    "back": "undefined. The curly braces create a function body block, but there's no return statement. To return 1+2, either remove braces: () => 1 + 2, or add return: () => { return 1 + 2 }.",
+    "topic": "Arrow Functions"
+  },
+  {
+    "front": "What is the output: let x = 1; (function() { console.log(x); let x = 2; })()?",
+    "back": "ReferenceError. The let declaration creates a 'temporal dead zone' — x exists in the function scope but cannot be accessed before its declaration, even though there's an outer x.",
+    "topic": "Variables"
+  },
+  {
+    "front": "What does typeof undefined return? What about typeof undeclaredVar?",
+    "back": "Both return \"undefined\". typeof is special — it doesn't throw a ReferenceError for undeclared variables, making it safe for checking if a variable exists.",
+    "topic": "Data Types"
+  },
+  {
+    "front": "What does alert(1 && 2 && 3) show?",
+    "back": "3. The && operator returns the first falsy value, or the last value if all are truthy. Since 1, 2, and 3 are all truthy, it returns the last value: 3.",
+    "topic": "Logical Operators"
+  },
+  {
+    "front": "What does alert(null || 2 && 3 || 4) show?",
+    "back": "3. Since && has higher precedence, 2 && 3 evaluates first to 3. Then null || 3 || 4 evaluates: null is falsy, so 3 (truthy) is returned.",
+    "topic": "Logical Operators"
+  },
+  {
+    "front": "What are the two ways to access object properties, and when would you use each?",
+    "back": "Dot notation (obj.prop) works with valid identifiers only. Bracket notation (obj[\"prop\"]) works with any string, multiword properties, and dynamic keys from variables.",
+    "topic": "Objects"
+  },
+  {
+    "front": "What are computed properties in an object literal?",
+    "back": "Property names determined by expressions inside square brackets: `let bag = {[fruit]: 5}` where the variable `fruit` determines the actual property name at runtime.",
+    "topic": "Objects"
+  },
+  {
+    "front": "What is property value shorthand?",
+    "back": "When a property name matches a variable name, you can write `{name, age}` instead of `{name: name, age: age}`.",
+    "topic": "Objects"
+  },
+  {
+    "front": "How does the 'in' operator differ from checking `=== undefined`?",
+    "back": "The `in` operator returns true if a property exists even if its value is `undefined`. Checking `obj.prop === undefined` can't distinguish between a missing property and one explicitly set to undefined.",
+    "topic": "Objects"
+  },
+  {
+    "front": "How are object properties ordered when iterating with for..in?",
+    "back": "Integer properties (like \"1\", \"2\", \"41\") are sorted numerically first. All other properties appear in creation order.",
+    "topic": "Objects"
+  },
+  {
+    "front": "What is the value of 'this' in a method call like obj.method()?",
+    "back": "'this' refers to the object before the dot — so in obj.method(), 'this' is obj. It's evaluated at call-time, not definition-time.",
+    "topic": "Object Methods"
+  },
+  {
+    "front": "What is 'this' when a function is called without an object context?",
+    "back": "In strict mode, 'this' is undefined. In non-strict (sloppy) mode, it defaults to the global object (window in browsers).",
+    "topic": "Object Methods"
+  },
+  {
+    "front": "How do arrow functions handle 'this' differently from regular functions?",
+    "back": "Arrow functions have no own 'this'. They inherit 'this' from the enclosing lexical scope (the outer normal function).",
+    "topic": "Object Methods"
+  },
+  {
+    "front": "What happens to 'this' when you assign a method to a variable and call it?\n\nlet greet = obj.greet;\ngreet();",
+    "back": "'this' is lost — it becomes undefined (strict mode) or the global object (non-strict). The method no longer has an object context because it's called as a standalone function.",
+    "topic": "Object Methods"
+  },
+  {
+    "front": "How do you enable method chaining on an object?",
+    "back": "Return 'this' from each method, so callers can chain: obj.step1().step2().step3().",
+    "topic": "Object Methods"
+  },
+  {
+    "front": "What happens when you copy an object with `let b = a`?",
+    "back": "Both variables point to the same object in memory (copy by reference). Modifying properties through either variable affects the shared object.",
+    "topic": "Object Copying"
+  },
+  {
+    "front": "What's the difference between shallow and deep cloning?",
+    "back": "Shallow cloning copies top-level properties by value, but nested objects remain as shared references. Deep cloning recursively copies all nested structures into independent objects.",
+    "topic": "Object Copying"
+  },
+  {
+    "front": "How do Object.assign() and the spread operator clone objects?",
+    "back": "Both perform shallow copies. `Object.assign({}, obj)` and `{...obj}` copy all top-level properties into a new object, but nested objects are still shared references.",
+    "topic": "Object Copying"
+  },
+  {
+    "front": "When should you use structuredClone() and what are its limitations?",
+    "back": "Use structuredClone() for deep cloning nested objects — it handles circular references too. However, it fails on objects containing function properties.",
+    "topic": "Object Copying"
+  },
+  {
+    "front": "Can you modify properties of a const object?",
+    "back": "Yes. 'const' prevents reassigning the variable itself, but properties of the referenced object are still mutable.",
+    "topic": "Object Copying"
+  },
+  {
+    "front": "What does the optional chaining operator ?. do?",
+    "back": "It safely accesses nested properties — returns undefined instead of throwing an error when an intermediate value is null or undefined. E.g., user?.address?.street.",
+    "topic": "Optional Chaining"
+  },
+  {
+    "front": "How do you safely call a method that might not exist using optional chaining?",
+    "back": "Use obj.method?.() — it calls the method only if it exists, otherwise returns undefined without throwing.",
+    "topic": "Optional Chaining"
+  },
+  {
+    "front": "What's the difference between obj?.prop and obj?.[prop]?",
+    "back": "obj?.prop uses dot notation for static property names. obj?.[prop] uses bracket notation for dynamic/computed property access.",
+    "topic": "Optional Chaining"
+  },
+  {
+    "front": "Can you use optional chaining for writing/assignment?",
+    "back": "No. `user?.name = 'value'` is an error. Optional chaining only works on the reading side, not the left side of an assignment.",
+    "topic": "Optional Chaining"
+  },
+  {
+    "front": "What does 'short-circuiting' mean in optional chaining?",
+    "back": "When the left side of ?. is null/undefined, evaluation stops immediately — no further property access, method calls, or side effects execute.",
+    "topic": "Optional Chaining"
+  },
+  {
+    "front": "Why are push/pop faster than shift/unshift?",
+    "back": "push/pop operate at the end of the array (no reindexing needed). shift/unshift operate at the beginning, requiring all remaining elements to be moved and reindexed.",
+    "topic": "Arrays"
+  },
+  {
+    "front": "Why should you use for..of instead of for..in for arrays?",
+    "back": "for..in iterates over ALL properties (including non-numeric ones), is 10-100x slower for arrays, and is designed for generic objects. for..of iterates only over array values.",
+    "topic": "Arrays"
+  },
+  {
+    "front": "What's the gotcha with new Array(5)?",
+    "back": "It creates an empty array with length 5, NOT an array containing the number 5. Use [5] or Array.of(5) instead.",
+    "topic": "Arrays"
+  },
+  {
+    "front": "What does arr.at(-1) do?",
+    "back": "Returns the last element of the array. The at() method supports negative indexes, counting backwards from the end.",
+    "topic": "Arrays"
+  },
+  {
+    "front": "What happens when you set arr.length = 0?",
+    "back": "It clears the array entirely. Decreasing length truncates the array irreversibly.",
+    "topic": "Arrays"
+  },
+  {
+    "front": "Can you compare arrays with ==?",
+    "back": "No. Two arrays are only == if they reference the exact same object. [1,2] == [1,2] is false. Compare element-by-element instead.",
+    "topic": "Arrays"
+  },
+  {
+    "front": "What does [] + [] output? What about [] + 1?",
+    "back": "[] converts to empty string \"\", so [] + [] is \"\". [] + 1 is \"1\". Arrays use toString() which returns comma-separated elements.",
+    "topic": "Arrays"
+  },
+  {
+    "front": "What's the difference between splice() and slice()?",
+    "back": "splice() modifies the original array (add/remove elements) and returns removed items. slice() returns a new array copy of a portion without modifying the original.",
+    "topic": "Array Methods"
+  },
+  {
+    "front": "Why does [1, 2, 15].sort() produce [1, 15, 2]?",
+    "back": "sort() converts elements to strings by default and sorts lexicographically. '15' < '2' as strings. Fix with a comparator: arr.sort((a, b) => a - b).",
+    "topic": "Array Methods"
+  },
+  {
+    "front": "Why use includes() over indexOf() for checking array membership?",
+    "back": "includes() correctly handles NaN (returns true for NaN), while indexOf() uses strict equality (===) and cannot find NaN.",
+    "topic": "Array Methods"
+  },
+  {
+    "front": "What's the difference between find() and filter()?",
+    "back": "find() returns the first matching element (or undefined). filter() returns an array of ALL matching elements.",
+    "topic": "Array Methods"
+  },
+  {
+    "front": "What happens if you call reduce() on an empty array without an initial value?",
+    "back": "It throws a TypeError: 'Reduce of empty array with no initial value'. Always provide an initial value to be safe.",
+    "topic": "Array Methods"
+  },
+  {
+    "front": "How does Array.isArray() solve what typeof cannot?",
+    "back": "typeof returns 'object' for both arrays and plain objects. Array.isArray([]) returns true, Array.isArray({}) returns false.",
+    "topic": "Array Methods"
+  },
+  {
+    "front": "What does forEach() return?",
+    "back": "undefined. The return value of the callback is ignored. Use map() if you need a new array of transformed values.",
+    "topic": "Array Methods"
+  },
+  {
+    "front": "How does reduce() differ from map()?",
+    "back": "map() transforms each element into a new array of the same length. reduce() accumulates all elements into a single value (number, string, object, etc.).",
+    "topic": "Array Methods"
+  },
+  {
+    "front": "What are the key differences between Map and a plain object?",
+    "back": "Map allows any type as keys (objects, functions, etc.), preserves insertion order, has a .size property, and doesn't convert keys to strings. Objects only support string/symbol keys.",
+    "topic": "Map and Set"
+  },
+  {
+    "front": "Why can't you use objects as keys in a plain object, but you can in a Map?",
+    "back": "Plain objects convert all keys to strings, so all object keys become '[object Object]'. Map preserves the actual object reference as the key.",
+    "topic": "Map and Set"
+  },
+  {
+    "front": "How do you convert between a plain object and a Map?",
+    "back": "Object to Map: new Map(Object.entries(obj)). Map to Object: Object.fromEntries(map). Both use the entries format of [key, value] pairs.",
+    "topic": "Map and Set"
+  },
+  {
+    "front": "What is the primary purpose of a Set?",
+    "back": "A Set stores unique values only — duplicate additions are silently ignored. It's optimized for fast membership testing with set.has(value).",
+    "topic": "Map and Set"
+  },
+  {
+    "front": "How does Map iteration order differ from plain objects?",
+    "back": "Maps always iterate in insertion order. Plain objects sort integer keys numerically first, then other keys in creation order.",
+    "topic": "Map and Set"
+  },
+  {
+    "front": "Why does the Set forEach callback receive the value twice?\nset.forEach((value, valueAgain, set) => ...)",
+    "back": "For compatibility with Map's forEach(value, key, map). Since Sets have no keys, the value is passed in place of the key argument.",
+    "topic": "Map and Set"
+  },
+  {
+    "front": "How do you skip elements during array destructuring?",
+    "back": "Use commas without a variable name: let [first, , third] = [1, 2, 3] — skips the second element, third = 3.",
+    "topic": "Destructuring"
+  },
+  {
+    "front": "How does the rest operator work in destructuring?",
+    "back": "It collects remaining elements into a new array: let [a, b, ...rest] = [1,2,3,4,5] gives rest = [3,4,5]. Must be the last element.",
+    "topic": "Destructuring"
+  },
+  {
+    "front": "How do you rename properties during object destructuring?",
+    "back": "Use a colon — let {width: w, height: h} = options assigns the width property to variable w and height to h.",
+    "topic": "Destructuring"
+  },
+  {
+    "front": "How do default values work in destructuring?",
+    "back": "Use = after the variable: let [name = 'Guest'] = []. Defaults activate only when the value is undefined (missing), not for null or other falsy values.",
+    "topic": "Destructuring"
+  },
+  {
+    "front": "Why do you need parentheses for object destructuring without let/const?\n\n{x, y} = obj; // Error!",
+    "back": "JavaScript treats {…} as a code block. Wrap in parentheses to force expression context: ({x, y} = obj).",
+    "topic": "Destructuring"
+  },
+  {
+    "front": "How does destructuring improve function parameters?",
+    "back": "Pass an object and destructure it: function show({title = 'Menu', width = 100} = {}). This gives named parameters with defaults and no argument-order dependency.",
+    "topic": "Destructuring"
+  },
+  {
+    "front": "Which property types does JSON.stringify skip automatically?",
+    "back": "Functions (methods), Symbol keys/values, and properties with undefined values are all omitted from the JSON output.",
+    "topic": "JSON"
+  },
+  {
+    "front": "What is the replacer parameter in JSON.stringify?",
+    "back": "The second argument — either an array of property names to include, or a function(key, value) that returns the value to encode (or undefined to skip it).",
+    "topic": "JSON"
+  },
+  {
+    "front": "What is the reviver parameter in JSON.parse?",
+    "back": "An optional function(key, value) that can transform values during parsing — commonly used to convert date strings back into Date objects.",
+    "topic": "JSON"
+  },
+  {
+    "front": "How do you pretty-print JSON?",
+    "back": "Pass a third argument to JSON.stringify: JSON.stringify(obj, null, 2) indents with 2 spaces. Can also pass a string for custom indentation.",
+    "topic": "JSON"
+  },
+  {
+    "front": "What is the toJSON() method?",
+    "back": "A custom method you can define on an object. JSON.stringify automatically calls it instead of the default serialization, letting you control the JSON output.",
+    "topic": "JSON"
+  },
+  {
+    "front": "What happens when JSON.stringify encounters a circular reference?",
+    "back": "It throws an error. JSON cannot represent circular structures. Use the replacer function to filter out circular references.",
+    "topic": "JSON"
+  },
+  {
+    "front": "What does JSON.parse('\"2024-01-01\"') return — a Date or a string?",
+    "back": "A string. JSON has no Date type. Use a reviver function to convert: JSON.parse(str, (key, val) => key === 'date' ? new Date(val) : val).",
+    "topic": "JSON"
+  },
+  {
+    "front": "Why are Object.keys/values/entries static methods instead of instance methods like Map's?",
+    "back": "Because objects may define their own keys() method. Using Object.keys(obj) avoids conflicts. Map uses map.keys() since Maps have a fixed interface.",
+    "topic": "Object.keys/values/entries"
+  },
+  {
+    "front": "Do Object.keys/values/entries return iterables or real arrays?",
+    "back": "Real arrays (not iterables), unlike Map which returns iterables. This is for historical reasons and allows direct use of array methods like .map() and .filter().",
+    "topic": "Object.keys/values/entries"
+  },
+  {
+    "front": "How do you transform object values using Object.entries and Object.fromEntries?",
+    "back": "Convert to entries array, transform with map, convert back: Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, v * 2])).",
+    "topic": "Object.keys/values/entries"
+  },
+  {
+    "front": "Do Object.keys/values/entries include Symbol properties?",
+    "back": "No, they skip symbolic properties. Use Object.getOwnPropertySymbols() or Reflect.ownKeys() to include symbols.",
+    "topic": "Object.keys/values/entries"
+  }
+];
+
+// Load cards from external file or embedded data
+function loadCards() { initApp(); }
+
+// ============================================================
+// SPACED REPETITION ENGINE (simplified SM-2)
+// ============================================================
+const STORAGE_KEY = 'js-flashcards-progress';
+
+function loadProgress() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  } catch { return {}; }
+}
+
+function saveProgress() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+}
+
+let progress = loadProgress();
+let currentFilter = 'all';
+let deck = [];
+let currentIndex = 0;
+let isFlipped = false;
+
+function getCardScore(id) {
+  return progress[id] || { score: 0, reviews: 0, lastReview: 0 };
+}
+
+function buildDeck() {
+  let cards = currentFilter === 'all'
+    ? [...ALL_CARDS]
+    : ALL_CARDS.filter(c => c.topic === currentFilter);
+
+  // Sort by: cards you got wrong first, then unreviewed, then known
+  cards.sort((a, b) => {
+    const sa = getCardScore(a.front).score;
+    const sb = getCardScore(b.front).score;
+    return sa - sb;
+  });
+
+  return cards;
+}
+
+function initApp() {
+  // Build topic filters
+  const topics = [...new Set(ALL_CARDS.map(c => c.topic))];
+  const filtersEl = document.getElementById('filters');
+  filtersEl.innerHTML = `<button class="filter-btn active" onclick="setFilter('all')">All (${ALL_CARDS.length})</button>`;
+  topics.forEach(t => {
+    const count = ALL_CARDS.filter(c => c.topic === t).length;
+    filtersEl.innerHTML += `<button class="filter-btn" onclick="setFilter('${t.replace(/'/g, "\\'")}')">${t} (${count})</button>`;
+  });
+
+  deck = buildDeck();
+  currentIndex = 0;
+  showCard();
+  updateStats();
+}
+
+function setFilter(topic) {
+  currentFilter = topic;
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active',
+      (topic === 'all' && btn.textContent.startsWith('All')) ||
+      btn.textContent.startsWith(topic)
+    );
+  });
+  deck = buildDeck();
+  currentIndex = 0;
+  showCard();
+  updateStats();
+}
+
+function showCard() {
+  if (deck.length === 0 || currentIndex >= deck.length) {
+    document.getElementById('card-container').style.display = 'none';
+    document.getElementById('actions').style.display = 'none';
+    document.getElementById('empty').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('card-container').style.display = 'block';
+  document.getElementById('empty').style.display = 'none';
+
+  const card = deck[currentIndex];
+  document.getElementById('card-front').textContent = card.front;
+  document.getElementById('card-back').textContent = card.back;
+  document.getElementById('card-topic').textContent = card.topic;
+  document.getElementById('card-topic-back').textContent = card.topic;
+  document.getElementById('card-number').textContent = `${currentIndex + 1} / ${deck.length}`;
+
+  // Reset flip
+  isFlipped = false;
+  document.getElementById('card').classList.remove('flipped');
+  document.getElementById('actions').style.display = 'none';
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('card').classList.toggle('flipped');
+  if (isFlipped) {
+    document.getElementById('actions').style.display = 'flex';
+  } else {
+    document.getElementById('actions').style.display = 'none';
+  }
+}
+
+function rate(score) {
+  const card = deck[currentIndex];
+  const id = card.front;
+  const prev = getCardScore(id);
+
+  // 0 = again (reset), 1 = hard (small bump), 2 = good (learned)
+  progress[id] = {
+    score: score === 0 ? 0 : prev.score + score,
+    reviews: prev.reviews + 1,
+    lastReview: Date.now()
+  };
+  saveProgress();
+
+  // If "again", push card to end of deck
+  if (score === 0) {
+    deck.push(card);
+  }
+
+  currentIndex++;
+  showCard();
+  updateStats();
+}
+
+function updateStats() {
+  let know = 0, learning = 0, remaining = 0;
+  const cards = currentFilter === 'all' ? ALL_CARDS : ALL_CARDS.filter(c => c.topic === currentFilter);
+
+  cards.forEach(c => {
+    const s = getCardScore(c.front);
+    if (s.score >= 3) know++;
+    else if (s.reviews > 0) learning++;
+    else remaining++;
+  });
+
+  document.getElementById('know-count').textContent = know;
+  document.getElementById('learning-count').textContent = learning;
+  document.getElementById('remaining-count').textContent = remaining;
+
+  const total = cards.length || 1;
+  document.getElementById('progress').style.width = `${(know / total) * 100}%`;
+}
+
+function resetSession() {
+  currentIndex = 0;
+  deck = buildDeck();
+  document.getElementById('empty').style.display = 'none';
+  showCard();
+  updateStats();
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space') { e.preventDefault(); flipCard(); }
+  if (e.key === '1' && isFlipped) rate(0);
+  if (e.key === '2' && isFlipped) rate(1);
+  if (e.key === '3' && isFlipped) rate(2);
+  if (e.key === 'ArrowRight') { currentIndex++; showCard(); }
+  if (e.key === 'ArrowLeft' && currentIndex > 0) { currentIndex--; showCard(); }
+});
+
+// Init
+loadCards();
+</script>
+</body>
+</html>
